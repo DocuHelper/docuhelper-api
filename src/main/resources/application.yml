@@ -5,3 +5,5 @@ spring:
     url: r2dbc:pool:postgres://${DB_HOST:192.168.0.7}:${DB_PORT:5432}/${DB_SCHEMA:docuhelper} # schema ??? webflux? ???
     username: ${DB_USER:postgres}
     password: ${DB_PASSWD:password}
+graphql:
+  packages: "org.bmserver.docuhelperapi"

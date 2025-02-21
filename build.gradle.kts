@@ -32,6 +32,17 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // https://mvnrepository.com/artifact/com.expediagroup/graphql-kotlin-spring-server
+    implementation("com.expediagroup:graphql-kotlin-spring-server:8.3.0")
+//    implementation("com.expediagroup", "graphql-kotlin-schema-generator", "8.3.0")
+
+    // 취약점 CVE-2024-7254 - S
+    implementation("com.google.protobuf:protobuf-java:4.28.2")
+    implementation("com.google.protobuf:protobuf-javalite:4.28.2")
+    implementation("com.google.protobuf:protobuf-kotlin:4.28.2")
+    // 취약점 CVE-2024-7254 - E
+
 }
 
 kotlin {
