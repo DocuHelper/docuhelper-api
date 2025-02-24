@@ -15,6 +15,7 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain =
         http
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange {
                 it.anyExchange().permitAll()
             }.addFilterAt(customAuthenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
