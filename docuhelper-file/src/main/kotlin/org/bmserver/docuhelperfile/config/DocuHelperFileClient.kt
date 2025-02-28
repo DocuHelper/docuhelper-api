@@ -1,6 +1,7 @@
 package org.bmserver.docuhelperfile.config
 
 import org.bmserver.core.file.File
+import org.bmserver.core.file.useCase.CreateUploadUrlUseCase
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -13,11 +14,11 @@ class DocuHelperFileClient {
     @Value("\${docuhelper.file.endpoint}")
     private lateinit var docuhelperFileEndpoint: String
 
-    fun getUploadPreSignedUrl(file: File): Mono<URL> =
+    fun getUploadPreSignedUrl(useCase: CreateUploadUrlUseCase): Mono<URL> =
         getClient()
             .post()
             .uri("/file")
-            .bodyValue(file)
+            .bodyValue(useCase)
             .retrieve()
             .bodyToMono(URL::class.java)
 

@@ -1,11 +1,12 @@
 package org.bmserver.core.file
 
+import org.bmserver.core.file.useCase.CreateUploadUrlUseCase
 import reactor.core.publisher.Mono
 import java.net.URL
 import java.util.UUID
 
 interface FileOutPort {
-    fun getFileUploadPreSignedUrl(file: File): Mono<URL>
+    fun getFileUploadPreSignedUrl(useCase: CreateUploadUrlUseCase): Mono<URL>
 
     fun getFileUrl(uuid: UUID): Mono<URL>
 

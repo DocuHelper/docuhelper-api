@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import java.util.UUID
 
 data class File(
-    @Id val uuid: UUID?,
+    @Id val uuid: UUID? = null,
     val name: String,
     val extension: String,
     val size: Long,

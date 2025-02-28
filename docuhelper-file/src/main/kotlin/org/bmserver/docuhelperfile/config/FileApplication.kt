@@ -2,6 +2,7 @@ package org.bmserver.docuhelperfile.config
 
 import org.bmserver.core.file.File
 import org.bmserver.core.file.FileOutPort
+import org.bmserver.core.file.useCase.CreateUploadUrlUseCase
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import java.net.URL
@@ -11,7 +12,7 @@ import java.util.UUID
 class FileApplication(
     private val docuHelperFileClient: DocuHelperFileClient,
 ) : FileOutPort {
-    override fun getFileUploadPreSignedUrl(file: File): Mono<URL> = docuHelperFileClient.getUploadPreSignedUrl(file)
+    override fun getFileUploadPreSignedUrl(useCase: CreateUploadUrlUseCase): Mono<URL> = docuHelperFileClient.getUploadPreSignedUrl(useCase)
 
     override fun getFileUrl(uuid: UUID): Mono<URL> = docuHelperFileClient.getFileUrl(uuid)
 
