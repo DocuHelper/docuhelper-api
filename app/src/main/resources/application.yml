@@ -15,6 +15,10 @@ spring:
 graphql:
   packages: "org.bmserver.app"
 
+docuhelper:
+  file:
+    endpoint: ${DOCUHELPER_FILE_ENDPOINT:http://localhost:8082}
+
 logging:
   level:
     org.springframework.jdbc.core: DEBUG

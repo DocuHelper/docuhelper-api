@@ -1,8 +1,8 @@
 package org.bmserver.app.document
 
-import org.bmserver.app.common.core.document.DocumentOutPort
-import org.bmserver.app.common.core.document.model.Document
-import org.bmserver.app.common.core.document.model.DocumentQuery
+import org.bmserver.core.document.DocumentOutPort
+import org.bmserver.core.document.model.Document
+import org.bmserver.core.document.model.DocumentQuery
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

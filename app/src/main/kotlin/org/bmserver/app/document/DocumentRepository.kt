@@ -1,7 +1,7 @@
 package org.bmserver.app.document
 
-import org.bmserver.app.common.core.common.BaseDomainRepository
-import org.bmserver.app.common.core.document.model.Document
+import org.bmserver.core.common.BaseDomainRepository
+import org.bmserver.core.document.model.Document
 import org.springframework.stereotype.Repository
 
 @Repository
