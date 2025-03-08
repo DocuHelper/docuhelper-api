@@ -1,4 +1,4 @@
-package org.bmserver.app.common.config.security
+package org.bmserver.gateway.config.security
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

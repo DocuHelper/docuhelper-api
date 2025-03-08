@@ -1,12 +1,12 @@
-package org.bmserver.app.common.config.security
+package org.bmserver.gateway.config.security
 
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.stereotype.Component
 
 @Component
 class CustomAuthenticationWebFilter(
-    private val customReactiveAuthenticationManager: org.bmserver.app.common.config.security.CustomReactiveAuthenticationManager,
-    private val jwtAuthenticationConverter: org.bmserver.app.common.config.security.JwtAuthenticationConverter,
+    private val customReactiveAuthenticationManager: CustomReactiveAuthenticationManager,
+    private val jwtAuthenticationConverter: JwtAuthenticationConverter,
 ) : AuthenticationWebFilter(customReactiveAuthenticationManager) {
     init {
         this.setServerAuthenticationConverter(jwtAuthenticationConverter)

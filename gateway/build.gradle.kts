@@ -1,7 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
-    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -21,35 +20,29 @@ repositories {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":docuhelper-file"))
-    implementation(project(":gateway"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+    implementation("io.jsonwebtoken:jjwt:0.12.6")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("org.postgresql:r2dbc-postgresql")
-
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // oauth - S
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-
-    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
-    implementation("io.jsonwebtoken:jjwt:0.12.6")
-    // oauth - E
-
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.4.2")
+    // https://mvnrepository.com/artifact/com.expediagroup/graphql-kotlin-spring-server
+    implementation("com.expediagroup:graphql-kotlin-spring-server:8.3.0")
+    // 취약점 CVE-2024-7254 - S
+    implementation("com.google.protobuf:protobuf-java:4.28.2")
+    implementation("com.google.protobuf:protobuf-javalite:4.28.2")
+    implementation("com.google.protobuf:protobuf-kotlin:4.28.2")
+    // 취약점 CVE-2024-7254 - E
 }
 
 kotlin {
@@ -62,6 +55,11 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-    mainClass.set("org.bmserver.app") // 실제 패키지명으로 변경
+tasks {
+    bootJar {
+        enabled = false
+    }
+    jar {
+        enabled = true
+    }
 }
