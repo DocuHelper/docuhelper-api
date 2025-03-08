@@ -1,4 +1,4 @@
-package org.bmserver.app.common.config.security
+package org.bmserver.gateway.config.security
 
 import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.http.server.reactive.ServerHttpRequest
@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 
 @Component
 class JwtAuthenticationConverter(
-    private val jwtUtil: org.bmserver.app.common.config.security.JwtUtil,
+    private val jwtUtil: JwtUtil,
 ) : ServerAuthenticationConverter {
     override fun convert(exchange: ServerWebExchange?): Mono<Authentication> {
         val request: ServerHttpRequest = exchange!!.request
@@ -20,15 +20,13 @@ class JwtAuthenticationConverter(
 
         val token = jwtCookie.get(0).value
 
-        val user: org.bmserver.app.common.config.security.User
+        val user: User
 
         try {
             val userInfo = jwtUtil.parseJwt(token)
             val email = userInfo["sub"] as String ?: return Mono.empty()
 
-            user =
-                org.bmserver.app.common.config.security
-                    .User(email)
+            user = User(email)
         } catch (e: ExpiredJwtException) {
             println(e)
             return Mono.empty()

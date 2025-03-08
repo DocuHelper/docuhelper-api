@@ -1,8 +1,8 @@
-package org.bmserver.core
+package org.bmserver.gateway
 
 import org.junit.jupiter.api.Test
 
-class CoreApplicationTests {
+class GatewayApplicationTests {
     @Test
     fun contextLoads() {
     }

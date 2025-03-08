@@ -1,4 +1,4 @@
-package org.bmserver.app.common.config.security
+package org.bmserver.gateway.config.security
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
