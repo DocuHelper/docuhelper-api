@@ -8,6 +8,7 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
+import java.util.UUID
 
 @Component
 class JwtAuthenticationConverter(
@@ -24,9 +25,10 @@ class JwtAuthenticationConverter(
 
         try {
             val userInfo = jwtUtil.parseJwt(token)
-            val email = userInfo["sub"] as String ?: return Mono.empty()
+            val userUuid = userInfo["sub"] as String
+            val userEmail = userInfo["email"] as String ?: return Mono.empty()
 
-            user = User(email)
+            user = User(UUID.fromString(userUuid), userEmail)
         } catch (e: ExpiredJwtException) {
             println(e)
             return Mono.empty()
@@ -34,11 +36,6 @@ class JwtAuthenticationConverter(
 
         val authentication = UsernamePasswordAuthenticationToken(user, token, listOf())
 
-        println("로그인 성공")
         return Mono.just(authentication)
     }
 }
-
-class User(
-    var email: String,
-)

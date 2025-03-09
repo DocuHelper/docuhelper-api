@@ -9,6 +9,7 @@ class CustomAuthenticationWebFilter(
     private val jwtAuthenticationConverter: JwtAuthenticationConverter,
 ) : AuthenticationWebFilter(customReactiveAuthenticationManager) {
     init {
+        // Jwt 쿠키 인증방식 적용
         this.setServerAuthenticationConverter(jwtAuthenticationConverter)
     }
 }
