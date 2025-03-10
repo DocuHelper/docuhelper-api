@@ -18,7 +18,16 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    afterEvaluate {
+        dependencies {
+            add("implementation", "io.github.oshai:kotlin-logging-jvm:7.0.3")
+        }
+    }
 }
 
 kotlin {

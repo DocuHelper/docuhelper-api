@@ -1,12 +1,11 @@
-package org.bmserver.gateway.config.security
+package org.bmserver.gateway.config.security.deprecated
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
-@Component
+// @Component
 class CustomReactiveAuthenticationManager : ReactiveAuthenticationManager {
     override fun authenticate(authentication: Authentication): Mono<Authentication> =
         Mono.just(

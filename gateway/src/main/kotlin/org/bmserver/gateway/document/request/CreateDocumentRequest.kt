@@ -14,6 +14,6 @@ class CreateDocumentRequest(
         Document(
             name = name,
             file = file,
-            owner = UUID.randomUUID(),
+            owner = requestUser.uuid,
         )
 }

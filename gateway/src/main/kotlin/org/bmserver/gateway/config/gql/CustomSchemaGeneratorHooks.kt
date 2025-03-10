@@ -6,22 +6,21 @@ import com.expediagroup.graphql.generator.hooks.SchemaGeneratorHooks
 import graphql.schema.DataFetcherFactory
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.GraphQLType
+import io.github.oshai.kotlinlogging.KotlinLogging
+import org.bmserver.gateway.common.AbstractRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.net.URL
 import java.util.UUID
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
 import kotlin.reflect.KType
+
+private val logger = KotlinLogging.logger { }
 
 @Component
 class CustomSchemaGeneratorHooks : SchemaGeneratorHooks {
-    override fun willResolveMonad(type: KType): KType =
-        when (type.classifier) {
-            Mono::class -> type.arguments.firstOrNull()?.type
-            else -> type
-        } ?: type
-
     override fun willGenerateGraphQLType(type: KType): GraphQLType? =
         when (type.classifier as? KClass<*>) {
             UUID::class -> graphqlUUIDType
@@ -35,11 +34,35 @@ class CustomFunctionDataFetcher(
     target: Any?,
     fn: KFunction<*>,
 ) : FunctionDataFetcher(target, fn) {
-    override fun get(environment: DataFetchingEnvironment): Any? =
-        when (val result = super.get(environment)) {
+    override fun mapParameterToValue(
+        param: KParameter,
+        environment: DataFetchingEnvironment,
+    ): Pair<KParameter, Any?>? {
+        val parameterValue = super.mapParameterToValue(param, environment)
+
+        // 유저 인증 적용
+        try {
+            parameterValue?.second.let {
+                when (it) {
+                    is AbstractRequest -> it.requestUser = environment.getRequestUser()
+                }
+            }
+        } catch (e: NullPointerException) {
+            error("403") // TODO 권한오류
+        }
+
+        return parameterValue
+    }
+
+    override fun get(environment: DataFetchingEnvironment): Any? {
+        val requestUser = environment.getRequestUser()
+        logger.info { "requestUser : $requestUser" }
+
+        return when (val result = super.get(environment)) {
             is Mono<*> -> result.toFuture()
             else -> result
         }
+    }
 }
 
 @Component

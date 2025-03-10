@@ -1,12 +1,11 @@
 package org.bmserver.gateway.document
 
+import graphql.schema.DataFetchingEnvironment
 import org.bmserver.core.common.CommonDomainService
 import org.bmserver.core.document.model.Document
 import org.bmserver.gateway.common.AbstractDomainMutationGateway
-import org.bmserver.gateway.config.security.SecurityUtil
 import org.bmserver.gateway.document.request.CreateDocumentRequest
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Mono
 
 @Component
 class DocumentGqlMutation(
@@ -14,9 +13,8 @@ class DocumentGqlMutation(
 ) : AbstractDomainMutationGateway<Document>(
         commonDomainService,
     ) {
-    fun createDocument(request: CreateDocumentRequest): Mono<Document> =
-        SecurityUtil
-            .getRequestUser()
-            .doOnNext { println(it) }
-            .flatMap { create(request.toUseCase()) }
+    suspend fun createDocument(
+        request: CreateDocumentRequest,
+        environment: DataFetchingEnvironment,
+    ): Document = create(request.toUseCase())
 }

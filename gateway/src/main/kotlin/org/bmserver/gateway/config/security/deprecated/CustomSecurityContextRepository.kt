@@ -1,13 +1,12 @@
-package org.bmserver.gateway.config.security
+package org.bmserver.gateway.config.security.deprecated
 
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.web.server.context.ServerSecurityContextRepository
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository
-import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
-@Component
+// @Component
 class CustomSecurityContextRepository : ServerSecurityContextRepository {
     // Stateless 설정
     override fun save(

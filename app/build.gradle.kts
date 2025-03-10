@@ -40,16 +40,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    // oauth - S
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-
-    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
-    implementation("io.jsonwebtoken:jjwt:0.12.6")
-    // oauth - E
-
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.4.2")
 }
 
 kotlin {

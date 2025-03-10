@@ -1,16 +1,16 @@
-package org.bmserver.gateway.config.security
+package org.bmserver.gateway.config.security.deprecated
 
-import io.jsonwebtoken.ExpiredJwtException
+import org.bmserver.gateway.config.security.JwtUtil
+import org.bmserver.gateway.config.security.User
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
-import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 import java.util.UUID
 
-@Component
+// @Component
 class JwtAuthenticationConverter(
     private val jwtUtil: JwtUtil,
 ) : ServerAuthenticationConverter {
@@ -29,7 +29,7 @@ class JwtAuthenticationConverter(
             val userEmail = userInfo["email"] as String ?: return Mono.empty()
 
             user = User(UUID.fromString(userUuid), userEmail)
-        } catch (e: ExpiredJwtException) {
+        } catch (e: Exception) {
             println(e)
             return Mono.empty()
         }

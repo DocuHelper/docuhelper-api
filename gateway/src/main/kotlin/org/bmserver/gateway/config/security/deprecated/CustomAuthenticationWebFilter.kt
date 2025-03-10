@@ -1,9 +1,8 @@
-package org.bmserver.gateway.config.security
+package org.bmserver.gateway.config.security.deprecated
 
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
-import org.springframework.stereotype.Component
 
-@Component
+// @Component
 class CustomAuthenticationWebFilter(
     private val customReactiveAuthenticationManager: CustomReactiveAuthenticationManager,
     private val jwtAuthenticationConverter: JwtAuthenticationConverter,
