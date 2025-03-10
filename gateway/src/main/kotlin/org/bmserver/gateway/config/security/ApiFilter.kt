@@ -22,7 +22,10 @@ class ApiFilter : WebFilter {
 
         val startTime = System.currentTimeMillis()
 
-        if (request.method != HttpMethod.OPTIONS) println("Request: ${request.getMethod()} ${request.getURI()}")
+        if (request.method != HttpMethod.OPTIONS) {
+            println("Request: ${request.getMethod()} ${request.getURI()}")
+            println(request.cookies)
+        }
 
         return chain
             .filter(exchange)

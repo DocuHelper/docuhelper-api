@@ -8,9 +8,7 @@ import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
 @Component
-class CustomSecurityContextRepository(
-    private val jwtAuthenticationConverter: JwtAuthenticationConverter,
-) : ServerSecurityContextRepository {
+class CustomSecurityContextRepository : ServerSecurityContextRepository {
     // Stateless 설정
     override fun save(
         exchange: ServerWebExchange,

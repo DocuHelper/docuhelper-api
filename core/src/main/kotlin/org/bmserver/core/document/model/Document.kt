@@ -5,7 +5,14 @@ import java.util.UUID
 
 data class Document(
     val name: String,
-    val state: DocumentState,
+    val state: DocumentState = DocumentState.READING,
     val file: UUID,
     val owner: UUID,
-) : BaseDomain()
+) : BaseDomain() {
+    constructor(name: String, file: UUID, owner: UUID) : this(
+        name = name,
+        state = DocumentState.READING,
+        file = file,
+        owner = owner,
+    )
+}
