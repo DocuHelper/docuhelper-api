@@ -27,7 +27,7 @@ class ApiFilter : WebFilter {
 
         if (request.method != HttpMethod.OPTIONS) {
             logger.info { "Request: ${request.getMethod()} ${request.getURI()}" }
-//            logger.info { request.cookies }
+            logger.info { request.cookies }
         }
 
         return chain
