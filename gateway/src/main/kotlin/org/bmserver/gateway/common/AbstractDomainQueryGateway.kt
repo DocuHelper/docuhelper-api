@@ -2,14 +2,14 @@ package org.bmserver.gateway.common
 
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import com.expediagroup.graphql.server.operations.Query
+import kotlinx.coroutines.reactor.awaitSingle
 import org.bmserver.core.common.BaseDomain
 import org.bmserver.core.common.BaseDomainQuery
 import org.bmserver.core.common.CommonDomainService
-import reactor.core.publisher.Flux
 
 abstract class AbstractDomainQueryGateway<T : BaseDomain>(
     private val commonDomainService: CommonDomainService<T>,
 ) : Query {
     @GraphQLIgnore
-    fun find(query: BaseDomainQuery): Flux<T> = commonDomainService.find(query)
+    suspend fun find(query: BaseDomainQuery): List<T> = commonDomainService.find(query).collectList().awaitSingle()
 }
