@@ -7,7 +7,7 @@ import graphql.schema.DataFetcherFactory
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.GraphQLType
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.bmserver.gateway.common.AbstractRequest
+import org.bmserver.gateway.common.AbstractAuthRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.net.URL
@@ -44,7 +44,7 @@ class CustomFunctionDataFetcher(
         try {
             parameterValue?.second.let {
                 when (it) {
-                    is AbstractRequest -> it.requestUser = environment.getRequestUser()
+                    is AbstractAuthRequest -> it.requestUser = environment.getRequestUser()
                 }
             }
         } catch (e: NullPointerException) {
