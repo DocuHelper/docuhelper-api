@@ -15,7 +15,10 @@ class WebFluxConfig : WebFluxConfigurer {
     fun corsWebFilter(): CorsWebFilter {
         val corsConfig =
             CorsConfiguration().apply {
-                allowedOrigins = listOf("https://docuhelper.bmserver.org/")
+                allowedOrigins = listOf(
+                    "https://docuhelper.bmserver.org/",
+                    "http://localhost:3000"
+                )
                 allowedMethods = listOf("POST", "OPTIONS") // 필요한 HTTP 메서드 추가
                 allowedHeaders = listOf("*") // 모든 헤더 허용
                 allowCredentials = true // 인증 정보 포함 허용 (필요 시)
