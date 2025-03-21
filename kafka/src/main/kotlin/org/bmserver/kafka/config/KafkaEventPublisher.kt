@@ -1,6 +1,7 @@
 package org.bmserver.kafka.config
 
 import org.bmserver.core.common.event.AbstractEvent
+import org.bmserver.core.common.event.EventKey
 import org.bmserver.core.common.event.EventPublisher
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.stereotype.Component
@@ -14,8 +15,9 @@ class KafkaEventPublisher(
 
         return reactiveKafkaProducerTemplate.send(
             KafkaTopic.DOCUHELPER_API.value,
-            event::class.simpleName.toString(),
+            EventKey(eventType = event::class.simpleName.toString()),
             event
         ).then()
     }
 }
+

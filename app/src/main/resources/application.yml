@@ -14,7 +14,7 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_HOST:192.168.0.7:9092}
     producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 graphql:
@@ -36,7 +36,7 @@ logging:
 dev:
   default:
     login:
-      enable: false
+      enable: true
       user:
         uuid: c6751ab8-5fb5-44f7-8ab3-b326686b6640
         email: jmspon33@gmail.com
