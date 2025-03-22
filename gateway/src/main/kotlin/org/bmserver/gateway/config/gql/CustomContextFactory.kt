@@ -2,8 +2,8 @@ package org.bmserver.gateway.config.gql
 
 import com.expediagroup.graphql.server.spring.execution.DefaultSpringGraphQLContextFactory
 import graphql.GraphQLContext
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.JwtException
+import org.bmserver.core.common.logger
 import org.bmserver.gateway.config.security.JwtUtil
 import org.bmserver.gateway.config.security.User
 import org.springframework.beans.factory.annotation.Value
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import java.util.UUID
 
-private val logger = KotlinLogging.logger { }
 
 @Component
 class CustomContextFactory(

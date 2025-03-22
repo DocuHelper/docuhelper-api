@@ -1,7 +1,7 @@
 package org.bmserver.app.document
 
-import org.bmserver.core.common.BaseDomainService
-import org.bmserver.core.common.event.EventPublisher
+import org.bmserver.core.common.domain.BaseDomainService
+import org.bmserver.core.common.domain.event.EventPublisher
 import org.bmserver.core.document.DocumentOutPort
 import org.bmserver.core.document.event.DocumentCreate
 import org.bmserver.core.document.model.Document

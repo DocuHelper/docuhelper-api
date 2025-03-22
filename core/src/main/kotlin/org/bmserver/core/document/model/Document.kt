@@ -1,6 +1,6 @@
 package org.bmserver.core.document.model
 
-import org.bmserver.core.common.BaseDomain
+import org.bmserver.core.common.domain.BaseDomain
 import java.util.UUID
 
 data class Document(

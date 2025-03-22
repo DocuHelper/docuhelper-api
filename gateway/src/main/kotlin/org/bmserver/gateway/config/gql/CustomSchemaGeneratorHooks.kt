@@ -6,7 +6,7 @@ import com.expediagroup.graphql.generator.hooks.SchemaGeneratorHooks
 import graphql.schema.DataFetcherFactory
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.GraphQLType
-import io.github.oshai.kotlinlogging.KotlinLogging
+import org.bmserver.core.common.logger
 import org.bmserver.gateway.common.AbstractAuthRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -17,7 +17,6 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
 
-private val logger = KotlinLogging.logger { }
 
 @Component
 class CustomSchemaGeneratorHooks : SchemaGeneratorHooks {

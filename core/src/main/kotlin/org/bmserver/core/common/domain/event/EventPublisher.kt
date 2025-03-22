@@ -1,4 +1,4 @@
-package org.bmserver.core.common.event
+package org.bmserver.core.common.domain.event
 
 import reactor.core.publisher.Mono
 

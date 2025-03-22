@@ -1,4 +1,4 @@
-package org.bmserver.core.common
+package org.bmserver.core.common.domain
 
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.relational.core.query.Criteria

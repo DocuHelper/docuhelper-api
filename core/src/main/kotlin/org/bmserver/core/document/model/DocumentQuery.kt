@@ -1,6 +1,6 @@
 package org.bmserver.core.document.model
 
-import org.bmserver.core.common.BaseDomainQuery
+import org.bmserver.core.common.domain.BaseDomainQuery
 import org.springframework.data.relational.core.query.Criteria
 import java.util.UUID
 

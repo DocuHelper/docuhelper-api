@@ -1,4 +1,4 @@
-package org.bmserver.core.common
+package org.bmserver.core.common.domain
 
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
