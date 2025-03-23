@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
-class DocumentParseStartEventHandler : EventHandler<DocumentParseStart>() {
+class DocumentParseStartEventHandler : EventHandler<DocumentParseStart> {
     override fun handle(event: DocumentParseStart): Mono<Void> {
         logger.info { event } //TODO
         return Mono.empty()

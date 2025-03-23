@@ -2,12 +2,12 @@ package org.bmserver.kafka.config
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.bmserver.core.common.domain.event.EventKey
-import org.bmserver.core.common.domain.event.EventListener
+import org.bmserver.core.common.domain.event.config.EventListener
 import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
-val logger = KotlinLogging.logger {  }
+val logger = KotlinLogging.logger { }
 
 @Component
 class KafkaEventListener(

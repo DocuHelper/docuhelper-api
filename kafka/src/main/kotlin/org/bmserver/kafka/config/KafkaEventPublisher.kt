@@ -2,7 +2,7 @@ package org.bmserver.kafka.config
 
 import org.bmserver.core.common.domain.event.AbstractEvent
 import org.bmserver.core.common.domain.event.EventKey
-import org.bmserver.core.common.domain.event.EventPublisher
+import org.bmserver.core.common.domain.event.config.EventPublisher
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
