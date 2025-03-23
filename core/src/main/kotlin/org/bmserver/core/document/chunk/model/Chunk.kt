@@ -6,6 +6,6 @@ import java.util.UUID
 class Chunk(
     val document: UUID,
     val page: Int,
-    val cotnent: String,
+    val content: String,
     val embedContent: List<Float>
 ) : BaseDomain()

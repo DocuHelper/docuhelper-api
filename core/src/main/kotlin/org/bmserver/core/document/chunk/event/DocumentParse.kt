@@ -5,6 +5,7 @@ import java.util.UUID
 
 data class DocumentParse(
     val documentUuid: UUID,
+    val page: Int,
     val content: String,
-    private val embedContent: List<Float>
+    val embedContent: List<Float>
 ) : AbstractEvent()
