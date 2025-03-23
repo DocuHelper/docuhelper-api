@@ -8,5 +8,4 @@ class Chunk(
     val page: Int,
     val cotnent: String,
     val embedContent: List<Float>
-) : BaseDomain() {
-}
+) : BaseDomain()

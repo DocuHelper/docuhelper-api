@@ -9,8 +9,7 @@ import reactor.core.publisher.Mono
 import java.lang.reflect.ParameterizedType
 
 @Component
-abstract class EventHandler<T>(
-) : ApplicationRunner {
+abstract class EventHandler<T> : ApplicationRunner {
 
     @Autowired
     private lateinit var eventListener: EventListener

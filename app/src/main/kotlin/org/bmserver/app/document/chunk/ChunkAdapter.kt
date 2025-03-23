@@ -11,5 +11,4 @@ class ChunkAdapter(
 ) : BaseDomainService<Chunk>(
     baseDomainRepository = baseDomainRepository,
     baseDomainQueryRepository = baseDomainQueryRepository
-) {
-}
+)

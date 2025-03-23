@@ -8,5 +8,4 @@ import org.springframework.stereotype.Component
 @Component
 class ChunkQueryRepository(
     private val r2dbcEntityTemplate: R2dbcEntityTemplate,
-) : BaseDomainQueryRepository<Chunk>(r2dbcEntityTemplate, Chunk::class.java) {
-}
+) : BaseDomainQueryRepository<Chunk>(r2dbcEntityTemplate, Chunk::class.java)

@@ -4,7 +4,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
 import org.springframework.http.server.reactive.ServerHttpRequest
-import org.springframework.http.server.reactive.ServerHttpResponse
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
@@ -21,21 +20,20 @@ class ApiFilter : WebFilter {
         chain: WebFilterChain,
     ): Mono<Void> {
         val request: ServerHttpRequest = exchange.request
-        val response: ServerHttpResponse = exchange.response
 
         val startTime = System.currentTimeMillis()
 
         if (request.method != HttpMethod.OPTIONS) {
-            logger.info { "Request: ${request.getMethod()} ${request.getURI()}" }
+            logger.info { "Request: ${request.method} ${request.uri}" }
             logger.info { request.cookies }
         }
 
         return chain
             .filter(exchange)
-            .doOnSuccess { aVoid: Void? ->
+            .doOnSuccess {
                 val duration = System.currentTimeMillis() - startTime
                 if (request.method != HttpMethod.OPTIONS) {
-                    logger.info { "Response: ${request.getMethod()} ${request.getURI()} - $duration ms" }
+                    logger.info { "Response: ${request.method} ${request.uri} - $duration ms" }
                 }
             }.doOnError { error: Throwable ->
                 logger.error { "Error processing request: ${error.message}" }

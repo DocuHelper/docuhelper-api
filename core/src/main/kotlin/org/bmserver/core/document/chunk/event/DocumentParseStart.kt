@@ -5,5 +5,4 @@ import java.util.UUID
 
 data class DocumentParseStart(
     val documentUuid: UUID
-) : AbstractEvent() {
-}
+) : AbstractEvent()
