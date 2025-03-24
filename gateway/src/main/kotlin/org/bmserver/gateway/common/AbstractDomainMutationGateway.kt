@@ -10,5 +10,9 @@ abstract class AbstractDomainMutationGateway<T : BaseDomain>(
     private val commonDomainService: CommonDomainService<T>,
 ) : Mutation {
     @GraphQLIgnore
-    suspend fun create(model: T): T = commonDomainService.create(model).awaitSingle()
+    suspend fun create(model: T): T = commonDomainService.create(model)
+        .doOnError{
+            it.printStackTrace() //TODO
+        }
+        .awaitSingle()
 }
