@@ -5,8 +5,10 @@ import org.bmserver.core.common.domain.event.config.EventPublisher
 import org.bmserver.core.document.DocumentOutPort
 import org.bmserver.core.document.event.DocumentCreate
 import org.bmserver.core.document.model.Document
+import org.bmserver.core.document.model.DocumentState
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import java.util.UUID
 
 @Service
 class DocumentAdapter(
@@ -20,5 +22,11 @@ class DocumentAdapter(
             .flatMap {
                 eventPublisher.publish(DocumentCreate(it)).thenReturn(it)
             }
+    }
+
+    override fun updateDocumentState(uuid: UUID, state: DocumentState): Mono<Document> {
+        return baseDomainRepository.findById(uuid)
+            .map { it.updateDocumentState(state) }
+            .flatMap { baseDomainRepository.save(it) }
     }
 }
