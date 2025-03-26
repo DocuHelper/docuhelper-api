@@ -19,6 +19,7 @@ class DocumentParseEventHandler(
                 page = event.page,
                 content = event.content,
                 embedContent = event.embedContent,
+                num = event.chunkNum
             )
         ).then()
     }
