@@ -1,5 +1,7 @@
 package org.bmserver.kafka.config
 
+import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.common.header.internals.RecordHeader
 import org.bmserver.core.common.domain.event.AbstractEvent
 import org.bmserver.core.common.domain.event.EventKey
 import org.bmserver.core.common.domain.event.config.EventPublisher
@@ -13,11 +15,21 @@ class KafkaEventPublisher(
 ) : EventPublisher {
     override fun publish(event: AbstractEvent): Mono<Void> {
 
-        return reactiveKafkaProducerTemplate.send(
+        val header = mutableListOf(
+            RecordHeader("eventType", event::class.simpleName.toString().toByteArray())
+        )
+
+        val key = EventKey(eventType = event::class.simpleName.toString())
+
+        val record = ProducerRecord<Any, Any>(
             KafkaTopic.DOCUHELPER_API.value,
-            EventKey(eventType = event::class.simpleName.toString()),
-            event
-        ).then()
+            null,
+            key,
+            event,
+            header
+        )
+
+        return reactiveKafkaProducerTemplate.send(record).then()
     }
 }
 
