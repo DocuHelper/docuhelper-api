@@ -4,6 +4,8 @@ import org.bmserver.core.common.domain.BaseDomainService
 import org.bmserver.core.document.chunk.ChunkOutPort
 import org.bmserver.core.document.chunk.model.Chunk
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
+import java.util.UUID
 
 @Component
 class ChunkAdapter(
@@ -12,4 +14,8 @@ class ChunkAdapter(
 ) : ChunkOutPort, BaseDomainService<Chunk>(
     baseDomainRepository = baseDomainRepository,
     baseDomainQueryRepository = baseDomainQueryRepository
-)
+) {
+    override fun findChunkByEmbed(document: UUID, embedContent: List<Float>): Flux<Chunk> {
+        return baseDomainQueryRepository.findByEmbed(document,embedContent)
+    }
+}
