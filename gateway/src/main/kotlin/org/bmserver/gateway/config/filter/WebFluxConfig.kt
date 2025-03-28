@@ -26,7 +26,18 @@ class WebFluxConfig : WebFluxConfigurer {
 
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/graphql", corsConfig)
-        source.registerCorsConfiguration("/subscriptions", corsConfig)
+        val corsSubscriptionConfig =
+            CorsConfiguration().apply {
+                allowedOrigins = listOf(
+                    "https://docuhelper.bmserver.org/",
+                    "http://localhost:3000"
+                )
+                allowedMethods = listOf("GET") // 필요한 HTTP 메서드 추가
+                allowedHeaders = listOf("*") // 모든 헤더 허용
+                allowCredentials = true // 인증 정보 포함 허용 (필요 시)
+            }
+
+        source.registerCorsConfiguration("/subscriptions", corsSubscriptionConfig)
 
         return CorsWebFilter(source)
     }
