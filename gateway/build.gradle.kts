@@ -47,6 +47,9 @@ dependencies {
     implementation("com.google.protobuf:protobuf-javalite:4.28.2")
     implementation("com.google.protobuf:protobuf-kotlin:4.28.2")
     // 취약점 CVE-2024-7254 - E
+
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+
 }
 
 kotlin {
