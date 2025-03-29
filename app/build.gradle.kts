@@ -24,6 +24,7 @@ dependencies {
     implementation(project(":docuhelper-file"))
     implementation(project(":gateway"))
     implementation(project(":kafka"))
+    implementation(project(":redis"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

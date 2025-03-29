@@ -5,17 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.schema.DataFetchingEnvironment
 import org.bmserver.core.common.Config
 import org.bmserver.core.common.notice.SubScriptionNotifier
+import org.bmserver.core.common.notice.UserClientManager
 import org.bmserver.gateway.config.gql.getRequestUser
-import org.bmserver.gateway.config.redis.ChatClientKey
-import org.bmserver.gateway.config.redis.ChatClientValue
 import org.bmserver.gateway.config.security.User
-import org.springframework.data.redis.core.ReactiveRedisOperations
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 @Component
 class ChatGqlSubscription(
-    private val redisOperationsChatClient: ReactiveRedisOperations<ChatClientKey, ChatClientValue>,
+    private val userClientManager: UserClientManager,
     private val subscriptionNotifier: SubScriptionNotifier,
     private val objectMapper: ObjectMapper
 ) : Subscription {
@@ -33,53 +31,10 @@ class ChatGqlSubscription(
     }
 
     private fun onConnected(requestUser: User) {
-        val key = ChatClientKey(requestUser.uuid)
-
-        redisOperationsChatClient
-            .opsForHash<ChatClientKey, ChatClientValue>()
-            .get(key, key)
-            .defaultIfEmpty(ChatClientValue())
-            .map {
-                val clientCount = it.clients.get(serverUuid)?.let { it + 1 } ?: 1
-                it.clients.put(serverUuid, clientCount)
-                it
-            }
-            .flatMap {
-                redisOperationsChatClient
-                    .opsForHash<ChatClientKey, ChatClientValue>()
-                    .put(key, key, it)
-            }
-            .subscribe()
+        userClientManager.addClient(requestUser.uuid).subscribe()
     }
 
     private fun disconnected(requestUser: User) {
-        val key = ChatClientKey(requestUser.uuid)
-
-        redisOperationsChatClient
-            .opsForHash<ChatClientKey, ChatClientValue>()
-            .get(key, key)
-            .map {
-                val clientCount = it.clients.get(serverUuid)?.let { it - 1 } ?: 0
-
-                if (clientCount == 0) {
-                    it.clients.remove(serverUuid)
-                } else {
-                    it.clients.put(serverUuid, clientCount)
-                }
-
-                it
-            }
-            .flatMap {
-                if (it.clients.isEmpty()) {
-                    redisOperationsChatClient
-                        .opsForHash<ChatClientKey, ChatClientValue>()
-                        .remove(key, key)
-                } else {
-                    redisOperationsChatClient
-                        .opsForHash<ChatClientKey, ChatClientValue>()
-                        .put(key, key, it)
-                }
-            }
-            .subscribe()
+        userClientManager.removeClient(requestUser.uuid).subscribe()
     }
 }
