@@ -1,5 +1,6 @@
 package org.bmserver.kafka.config
 
+import org.bmserver.core.common.Config
 import org.bmserver.core.common.domain.event.EventKey
 import org.bmserver.core.common.notice.NoticeKey
 import org.springframework.beans.factory.annotation.Qualifier
@@ -43,7 +44,7 @@ class KafkaConfig {
         val opt = ReceiverOptions.create<NoticeKey, LinkedHashMap<String, String>>(consumerProperties)
             .subscription(
                 listOf(
-                    KafkaTopic.DOCUHELPER_NOTICE.value
+                    "${KafkaTopic.DOCUHELPER_NOTICE.value}-${Config.serverUuid}"
                 )
             )
 

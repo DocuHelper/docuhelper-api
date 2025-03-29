@@ -10,6 +10,5 @@ interface UserClientManager {
 
     fun removeClient(user: UUID): Mono<Void>
 
-    fun getUserClientInfo(user: UUID)
-
+    fun getUserClientInfo(user: UUID): Mono<MutableMap<UUID, Int>>
 }

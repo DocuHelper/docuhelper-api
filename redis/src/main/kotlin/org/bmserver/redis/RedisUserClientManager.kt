@@ -65,7 +65,12 @@ class RedisUserClientManager(
             .then()
     }
 
-    override fun getUserClientInfo(user: UUID) {
-        TODO("Not yet implemented")
+    override fun getUserClientInfo(user: UUID): Mono<MutableMap<UUID, Int>> {
+        val key = ClientKey(user)
+
+        return redisOperationsClient
+            .opsForHash<ClientKey, ClientValue>()
+            .get(key, key)
+            .map { it.clients }
     }
 }
