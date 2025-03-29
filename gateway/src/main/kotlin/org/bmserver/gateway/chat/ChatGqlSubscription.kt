@@ -1,8 +1,10 @@
 package org.bmserver.gateway.chat
 
 import com.expediagroup.graphql.server.operations.Subscription
+import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.schema.DataFetchingEnvironment
-import org.bmserver.core.chat.event.ChatAnswer
+import org.bmserver.core.common.Config
+import org.bmserver.core.common.notice.SubScriptionNotifier
 import org.bmserver.gateway.config.gql.getRequestUser
 import org.bmserver.gateway.config.redis.ChatClientKey
 import org.bmserver.gateway.config.redis.ChatClientValue
@@ -10,30 +12,23 @@ import org.bmserver.gateway.config.security.User
 import org.springframework.data.redis.core.ReactiveRedisOperations
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
-import java.time.Duration
-import java.util.UUID
 
 @Component
 class ChatGqlSubscription(
-    private val redisOperationsChatClient: ReactiveRedisOperations<ChatClientKey, ChatClientValue>
+    private val redisOperationsChatClient: ReactiveRedisOperations<ChatClientKey, ChatClientValue>,
+    private val subscriptionNotifier: SubScriptionNotifier,
+    private val objectMapper: ObjectMapper
 ) : Subscription {
-    val serverUuid = UUID.randomUUID()
+    val serverUuid = Config.serverUuid
 
-    fun subChat(environment: DataFetchingEnvironment): Flux<ChatAnswer> {
+    fun subChat(environment: DataFetchingEnvironment): Flux<String> {
         val requestUser = environment.getRequestUser()
-        val flux = Flux.interval(Duration.ofSeconds(1))
-            .map {
-                ChatAnswer(
-                    document = UUID.randomUUID(),
-                    ask = "",
-                    chat = UUID.randomUUID(),
-                    answer = ""
-                )
-            }
+
+        return subscriptionNotifier.sub(requestUser.uuid)
+            .map { objectMapper.writeValueAsString(it.second) }
             .doOnSubscribe { onConnected(requestUser) }
             .doOnCancel { disconnected(requestUser) }
             .doOnTerminate { disconnected(requestUser) }
-        return flux
 
     }
 
@@ -78,7 +73,7 @@ class ChatGqlSubscription(
                 if (it.clients.isEmpty()) {
                     redisOperationsChatClient
                         .opsForHash<ChatClientKey, ChatClientValue>()
-                        .remove(key,key)
+                        .remove(key, key)
                 } else {
                     redisOperationsChatClient
                         .opsForHash<ChatClientKey, ChatClientValue>()
