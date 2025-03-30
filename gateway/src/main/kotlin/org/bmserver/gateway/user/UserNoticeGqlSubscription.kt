@@ -1,9 +1,8 @@
-package org.bmserver.gateway.chat
+package org.bmserver.gateway.user
 
 import com.expediagroup.graphql.server.operations.Subscription
 import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.schema.DataFetchingEnvironment
-import org.bmserver.core.common.Config
 import org.bmserver.core.common.notice.SubScriptionNotifier
 import org.bmserver.core.common.notice.UserClientManager
 import org.bmserver.gateway.config.gql.getRequestUser
@@ -12,14 +11,12 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 
 @Component
-class ChatGqlSubscription(
+class UserNoticeGqlSubscription(
     private val userClientManager: UserClientManager,
     private val subscriptionNotifier: SubScriptionNotifier,
     private val objectMapper: ObjectMapper
 ) : Subscription {
-    val serverUuid = Config.serverUuid
-
-    fun subChat(environment: DataFetchingEnvironment): Flux<String> {
+    fun subNotice(environment: DataFetchingEnvironment): Flux<String> {
         val requestUser = environment.getRequestUser()
 
         return subscriptionNotifier.sub(requestUser.uuid)
