@@ -8,6 +8,7 @@ import org.bmserver.core.common.domain.BaseDomainQueryRepository
 import org.bmserver.core.common.domain.BaseDomainRepository
 import org.bmserver.core.common.domain.BaseDomainService
 import org.bmserver.core.common.domain.event.config.EventPublisher
+import org.bmserver.core.common.notice.UserNotifier
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.util.UUID
@@ -16,6 +17,7 @@ import java.util.UUID
 class ChatAdapter(
     private val baseDomainRepository: BaseDomainRepository<Chat>,
     private val baseDomainQueryRepository: BaseDomainQueryRepository<Chat>,
+    private val userNotifier: UserNotifier,
     private val eventPublisher: EventPublisher
 ) : ChatOutPort, BaseDomainService<Chat>(baseDomainRepository, baseDomainQueryRepository) {
     override fun create(model: Chat): Mono<Chat> {
@@ -30,6 +32,9 @@ class ChatAdapter(
                 it.result = answer
                 it.state = ChatState.COMPETE
                 baseDomainRepository.save(it)
+            }
+            .flatMap {
+                userNotifier.send(it.userUuid, it).thenReturn(it)
             }
     }
 }
