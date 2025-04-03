@@ -33,7 +33,7 @@ graphql:
 
 docuhelper:
   file:
-    endpoint: ${DOCUHELPER_FILE_ENDPOINT:http://localhost:8082}
+    endpoint: ${DOCUHELPER_FILE_ENDPOINT:http://192.168.0.77:8082}
 
 logging:
   level:

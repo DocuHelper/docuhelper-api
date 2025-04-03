@@ -17,7 +17,8 @@ class WebFluxConfig : WebFluxConfigurer {
             CorsConfiguration().apply {
                 allowedOrigins = listOf(
                     "https://docuhelper.bmserver.org/",
-                    "http://localhost:3000"
+                    "http://localhost:3000",
+                    "http://192.168.0.77:3000",
                 )
                 allowedMethods = listOf("POST", "OPTIONS") // 필요한 HTTP 메서드 추가
                 allowedHeaders = listOf("*") // 모든 헤더 허용
@@ -30,7 +31,8 @@ class WebFluxConfig : WebFluxConfigurer {
             CorsConfiguration().apply {
                 allowedOrigins = listOf(
                     "https://docuhelper.bmserver.org/",
-                    "http://localhost:3000"
+                    "http://localhost:3000",
+                    "http://192.168.0.77:3000",
                 )
                 allowedMethods = listOf("GET") // 필요한 HTTP 메서드 추가
                 allowedHeaders = listOf("*") // 모든 헤더 허용
