@@ -23,7 +23,7 @@ class ChatAdapter(
     override fun create(model: Chat): Mono<Chat> {
         return super.create(model).flatMap {
             eventPublisher.publish(ChatSend(it)).thenReturn(it)
-        }
+        }.flatMap { userNotifier.send(it.userUuid, it).thenReturn(it) }
     }
 
     override fun updateAnswer(uuid: UUID, answer: String): Mono<Chat> {
