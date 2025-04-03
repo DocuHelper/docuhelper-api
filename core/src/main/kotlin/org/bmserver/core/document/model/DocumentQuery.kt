@@ -1,6 +1,7 @@
 package org.bmserver.core.document.model
 
 import org.bmserver.core.common.domain.BaseDomainQuery
+import org.bmserver.core.common.domain.Pagination
 import org.springframework.data.relational.core.query.Criteria
 import java.util.UUID
 
@@ -9,7 +10,8 @@ data class DocumentQuery(
     private val name: String?,
     private val state: DocumentState?,
     private val owner: UUID?,
-) : BaseDomainQuery() {
+    override val pagination: Pagination?
+) : BaseDomainQuery(pagination) {
     override fun buildQuery(): Criteria {
         val criteriaList = mutableListOf<Criteria>()
 

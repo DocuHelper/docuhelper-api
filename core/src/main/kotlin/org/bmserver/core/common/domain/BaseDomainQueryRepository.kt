@@ -9,18 +9,22 @@ abstract class BaseDomainQueryRepository<T : BaseDomain>(
     private val template: R2dbcEntityTemplate,
     private val classType: Class<T>,
 ) {
-    fun searchQuery(criteria: BaseDomainQuery): Flux<T> {
-        val whereBuilder = criteria.buildQuery()
-
-        return fetchAll(whereBuilder)
+    fun searchQuery(query: BaseDomainQuery): Flux<T> {
+        val whereBuilder = query.buildQuery()
+        val pagination = query.pagination
+        return fetchAll(whereBuilder, pagination)
     }
 
-    private fun fetchAll(criteria: Criteria): Flux<T> {
+    private fun fetchAll(criteria: Criteria, pagination: Pagination?): Flux<T> {
         val sql = template.select(classType)
 
 //        criteria.and(Cert) TODO 공통 추가
 
-        val query = Query.query(criteria)
+        val query = if (pagination == null) {
+            Query.query(criteria)
+        } else {
+            Query.query(criteria).limit(pagination.limit).offset(pagination.offset)
+        }
 
         return sql
             .matching(query)
