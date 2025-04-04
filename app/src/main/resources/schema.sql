@@ -27,3 +27,11 @@ CREATE TABLE IF NOT EXISTS public.chat
     result    TEXT null
 );
 
+CREATE TABLE IF NOT EXISTS public.chat_answer_ref
+(
+    uuid      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    chat  UUID,
+    chunk  UUID,
+    similarity float
+);
+
