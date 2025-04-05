@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS public.document
     name  VARCHAR,
     state VARCHAR NOT NULL,
     owner UUID,
-    file  UUID
+    file  UUID,
+
+    create_dt TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS public.chunk
@@ -14,7 +16,9 @@ CREATE TABLE IF NOT EXISTS public.chunk
     page          INT8,
     num           INT8,
     content       TEXT,
-    embed_content VECTOR
+    embed_content VECTOR,
+
+    create_dt TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS public.chat
@@ -24,7 +28,9 @@ CREATE TABLE IF NOT EXISTS public.chat
     user_uuid UUID,
     user_ask  TEXT,
     state     varchar,
-    result    TEXT null
+    result    TEXT null,
+
+    create_dt TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS public.chat_answer_ref
@@ -32,6 +38,8 @@ CREATE TABLE IF NOT EXISTS public.chat_answer_ref
     uuid      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     chat  UUID,
     chunk  UUID,
-    similarity float
+    similarity float,
+
+    create_dt TIMESTAMP
 );
 

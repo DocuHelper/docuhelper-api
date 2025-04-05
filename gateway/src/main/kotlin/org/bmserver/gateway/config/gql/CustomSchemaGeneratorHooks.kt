@@ -11,6 +11,7 @@ import org.bmserver.gateway.common.AbstractAuthRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.net.URL
+import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -25,6 +26,7 @@ class CustomSchemaGeneratorHooks : SchemaGeneratorHooks {
             UUID::class -> graphqlUUIDType
             URL::class -> graphqlURLType
             Long::class -> graphqlLongType
+            LocalDateTime::class -> graphqlLocalDateTimeType
             else -> null
         }
 }
