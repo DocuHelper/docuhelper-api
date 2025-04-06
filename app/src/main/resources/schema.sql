@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS public.chunk
 (
     uuid          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document      UUID,
-    page          INT8,
-    num           INT8,
+    page          INT4,
+    num           INT4,
     content       TEXT,
     embed_content VECTOR,
 
@@ -43,3 +43,8 @@ CREATE TABLE IF NOT EXISTS public.chat_answer_ref
     create_dt TIMESTAMP
 );
 
+
+select
+    *
+from public.chunk c
+where uuid in ('c9cc7b53-9045-4088-a0c6-528dd535e99a')

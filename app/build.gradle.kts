@@ -33,8 +33,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    runtimeOnly("org.postgresql:postgresql")
-    implementation("io.r2dbc:r2dbc-postgresql:0.8.13.RELEASE") // ← 정확한 R2DBC 드라이버
+    implementation("org.postgresql:r2dbc-postgresql:1.0.7.RELEASE")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")

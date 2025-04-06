@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 import org.springframework.data.convert.CustomConversions.StoreConversions
 import org.springframework.data.r2dbc.convert.R2dbcCustomConversions
+import org.springframework.data.r2dbc.dialect.PostgresDialect
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator
 
@@ -23,7 +24,12 @@ class DBConfig {
 
     @Bean
     fun r2dbcCustomConversions(): R2dbcCustomConversions {
-        val converters = listOf(VectorToListFloatConverter())
-        return R2dbcCustomConversions(StoreConversions.NONE, converters)
+        val converters = listOf(
+            VectorToListFloatConverter()
+        )
+
+        val storeConversions = StoreConversions.of(PostgresDialect.INSTANCE.simpleTypeHolder, converters)
+
+        return R2dbcCustomConversions(storeConversions, converters)
     }
 }
