@@ -12,7 +12,7 @@ spring:
     jwt:
       secret: ${JWT_SECRET:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855}
   kafka:
-    bootstrap-servers: ${KAFKA_HOST:192.168.0.7:9092}
+    bootstrap-servers: ${KAFKA_HOST:192.168.0.7}:${KAFKA_PORT:9092}
     producer:
       key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

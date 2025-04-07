@@ -55,5 +55,5 @@ tasks.withType<Test> {
 }
 
 tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-    mainClass.set("org.bmserver.app") // 실제 패키지명으로 변경
+    mainClass.set("org.bmserver.app.AppApplicationKt") // 실제 패키지명으로 변경
 }
