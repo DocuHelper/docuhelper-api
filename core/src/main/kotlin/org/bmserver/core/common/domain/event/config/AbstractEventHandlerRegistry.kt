@@ -16,8 +16,8 @@ abstract class AbstractEventHandlerRegistry : BeanPostProcessor {
         return eventHandlerMap[eventClass] ?: emptyList()
     }
 
-    fun getEventType(eventSimpleName: String): Class<out AbstractEvent> {
-        return eventClassMap[eventSimpleName]!!
+    fun getEventType(eventSimpleName: String): Class<out AbstractEvent>? {
+        return eventClassMap[eventSimpleName]
     }
 
 }

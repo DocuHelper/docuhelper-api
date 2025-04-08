@@ -17,6 +17,8 @@ class KafkaConfig {
     @Bean
     @Qualifier
     fun reactiveKafkaProducerTemplate(props: KafkaProperties): ReactiveKafkaProducerTemplate<Any, Any> {
+        val producerProperties = props.buildProducerProperties()
+
         return ReactiveKafkaProducerTemplate(
             SenderOptions.create(props.buildProducerProperties())
         )
@@ -60,6 +62,7 @@ class KafkaConfig {
         consumerProperties.putAll(
             mapOf(
                 "group.id" to "docuhelper-api",
+                "spring.json.use.type.headers" to false,
                 "spring.json.trusted.packages" to "*",
                 "spring.json.key.default.type" to "org.bmserver.core.common.domain.event.EventKey",
                 "spring.json.value.default.type" to "java.util.LinkedHashMap",
