@@ -20,6 +20,9 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: docuhelper-configmap-prod
 ---
 
 apiVersion: v1
@@ -36,4 +39,4 @@ spec:
     - protocol: TCP
       targetPort: 8080    # pod 포트
       port: 8080          # 서비스 내부 포트
-      nodePort: 30000      # 서비스 외부 포트
+      nodePort: 30001      # 서비스 외부 포트
