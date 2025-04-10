@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
         - name: docuhelper-api-container
-          image: docker.bmserver.org/docuhelper-api
-          imagePullPolicy: Always
+          image: docker.bmserver.org/docuhelper-api:$IMAGE_TAG
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           envFrom:
