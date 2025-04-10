@@ -1,0 +1,38 @@
+server:
+  port: 8080
+
+spring:
+  r2dbc:
+    url: r2dbc:pool:postgres://192.168.0.7:5432/dev-docuhelper
+    username: postgres
+    password: password
+  security:
+    jwt:
+      secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  kafka:
+    bootstrap-servers: 192.168.0.7:9094
+    consumer:
+      auto-offset-reset: latest
+  data:
+    redis:
+      host: 192.168.0.7
+      port: 6379
+      password: passwd
+
+docuhelper:
+  file:
+    endpoint: http://192.168.0.77:8082
+
+logging:
+  level:
+    org.springframework.jdbc.core: DEBUG
+    org.springframework.r2dbc: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
+
+dev:
+  default:
+    login:
+      enable: false
+      user:
+        uuid: c6751ab8-5fb5-44f7-8ab3-b326686b6640
+        email: jmspon33@gmail.com

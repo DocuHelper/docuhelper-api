@@ -1,0 +1,24 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  r2dbc:
+    url: r2dbc:pool:postgres://${DB_HOST}:${DB_PORT}/docuhelper
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWD:password}
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
+    consumer:
+      auto-offset-reset: earliest
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+
+docuhelper:
+  file:
+    endpoint: ${DOCUHELPER_FILE_ENDPOINT}

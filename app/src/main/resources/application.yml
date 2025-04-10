@@ -1,28 +1,10 @@
-server:
-  port: ${PORT:8080}
-
 spring:
   application:
     name: docuhelper-api
-  r2dbc:
-    url: r2dbc:pool:postgres://${DB_HOST:192.168.0.7}:${DB_PORT:5432}/docuhelper
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWD:password}
-  security:
-    jwt:
-      secret: ${JWT_SECRET:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855}
   kafka:
-    bootstrap-servers: ${KAFKA_HOST:192.168.0.7}:${KAFKA_PORT:9092}
     producer:
       key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      auto-offset-reset: earliest
-  data:
-    redis:
-      host: 192.168.0.7
-      port: 6379
-      password: passwd
 
 
 graphql:
@@ -31,20 +13,3 @@ graphql:
     - "org.bmserver.core"
     - "org.bmserver.gateway"
 
-docuhelper:
-  file:
-    endpoint: ${DOCUHELPER_FILE_ENDPOINT:http://192.168.0.77:8082}
-
-logging:
-  level:
-    org.springframework.jdbc.core: DEBUG
-    org.springframework.r2dbc: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
-
-dev:
-  default:
-    login:
-      enable: false
-      user:
-        uuid: c6751ab8-5fb5-44f7-8ab3-b326686b6640
-        email: jmspon33@gmail.com
