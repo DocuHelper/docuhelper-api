@@ -18,6 +18,13 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
+  ai:
+    ollama:
+      base-url: ${OLLAMA_ENDPOINT}
+      embedding:
+        model: ${OLLAMA_EMBEDDING_MODEL}
+    openai:
+      api-key: ${OPENAI_API_KEY}
 
 docuhelper:
   file:

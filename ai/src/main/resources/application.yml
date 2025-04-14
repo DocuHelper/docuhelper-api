@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: ai
+  ai:
+    ollama:
+      base-url: http://192.168.0.8:11434
+      embedding:
+        model: bge-m3
+    openai:
+      api-key: ${OPENAI_API_KEY}
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE

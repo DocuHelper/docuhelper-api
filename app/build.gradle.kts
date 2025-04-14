@@ -15,6 +15,14 @@ java {
     }
 }
 
+extra["springAiVersion"] = "1.0.0-M7"
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -25,6 +33,7 @@ dependencies {
     implementation(project(":gateway"))
     implementation(project(":kafka"))
     implementation(project(":redis"))
+    implementation(project(":ai"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

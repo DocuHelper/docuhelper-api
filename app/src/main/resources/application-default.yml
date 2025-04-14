@@ -18,6 +18,13 @@ spring:
       host: 192.168.0.7
       port: 6379
       password: passwd
+  ai:
+    ollama:
+      base-url: http://192.168.0.8:11434
+      embedding:
+        model: bge-m3
+    openai:
+      api-key: ${OPENAI_API_KEY}
 
 docuhelper:
   file:
