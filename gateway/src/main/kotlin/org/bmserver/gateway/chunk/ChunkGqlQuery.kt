@@ -14,7 +14,7 @@ class ChunkGqlQuery(
 ) : AbstractDomainQueryGateway<Chunk>(
     chunkOutPort
 ) {
-    suspend fun findChunkByEmbedValue(document: UUID, embed: List<Float>): List<ChunkWithSimilarity> {
-        return chunkOutPort.findChunkByEmbed(document, embed).collectList().awaitSingle()
+    suspend fun findChunkByEmbedValue(document: UUID, text: String): List<ChunkWithSimilarity> {
+        return chunkOutPort.findChunkByEmbed(document, text).collectList().awaitSingle()
     }
 }
