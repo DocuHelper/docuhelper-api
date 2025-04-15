@@ -75,7 +75,8 @@ class KafkaConfig {
             .subscription(
                 listOf(
                     "docuhelper-document-parser",
-                    "docuhelper-n8n"
+                    "docuhelper-n8n",
+                    "docuhelper-api"
                 )
             )
 
