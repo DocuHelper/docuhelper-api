@@ -17,3 +17,11 @@ graphql:
     - "org.bmserver.core"
     - "org.bmserver.gateway"
 
+
+dev:
+  default:
+    login:
+      enable: false
+      user:
+        uuid: c6751ab8-5fb5-44f7-8ab3-b326686b6640
+        email: jmspon33@gmail.com
