@@ -8,5 +8,9 @@ spring:
         model: bge-m3
     openai:
       api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4.1-nano-2025-04-14
+
   r2dbc:
     url: r2dbc:h2:mem:///testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
