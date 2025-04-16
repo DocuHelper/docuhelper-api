@@ -28,7 +28,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     implementation("com.fasterxml.jackson.core:jackson-databind")
-
+    testImplementation("io.r2dbc:r2dbc-h2:1.0.0.RELEASE")
     implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
 
 }

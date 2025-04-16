@@ -1,76 +1,71 @@
 package org.bmserver.redis
 
+import jakarta.annotation.PostConstruct
 import org.bmserver.core.common.Config
-import org.bmserver.core.common.notice.ClientKey
-import org.bmserver.core.common.notice.ClientValue
 import org.bmserver.core.common.notice.UserClientManager
-import org.springframework.data.redis.core.ReactiveRedisOperations
+import org.bmserver.redis.dto.Server
+import org.bmserver.redis.dto.User
+import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.util.UUID
 
 @Component
 class RedisUserClientManager(
-    private val redisOperationsClient: ReactiveRedisOperations<ClientKey, ClientValue>
+    private val serverRedisTemplate: ReactiveRedisTemplate<Server, Int>,
+    private val userRedisTemplate: ReactiveRedisTemplate<User, Int>
 ) : UserClientManager {
-    override fun addClient(user: UUID): Mono<Void> {
-        val serverUuid = Config.serverUuid
-        val key = ClientKey(user)
+    override fun addClient(userUuid: UUID): Mono<Void> {
+        val server = Server(Config.serverUuid)
+        val user = User(userUuid)
 
-        return redisOperationsClient
-            .opsForHash<ClientKey, ClientValue>()
-            .get(key, key)
-            .defaultIfEmpty(ClientValue())
-            .map {
-                val clientCount = it.clients.get(serverUuid)?.let { it + 1 } ?: 1
-                it.clients.put(serverUuid, clientCount)
-                it
-            }
-            .flatMap {
-                redisOperationsClient
-                    .opsForHash<ClientKey, ClientValue>()
-                    .put(key, key, it)
-            }.then()
-    }
-
-    override fun removeClient(user: UUID): Mono<Void> {
-        val serverUuid = Config.serverUuid
-        val key = ClientKey(user)
-
-        return redisOperationsClient
-            .opsForHash<ClientKey, ClientValue>()
-            .get(key, key)
-            .map {
-                val clientCount = it.clients.get(serverUuid)?.let { it - 1 } ?: 0
-
-                if (clientCount == 0) {
-                    it.clients.remove(serverUuid)
-                } else {
-                    it.clients.put(serverUuid, clientCount)
-                }
-
-                it
-            }
-            .flatMap {
-                if (it.clients.isEmpty()) {
-                    redisOperationsClient
-                        .opsForHash<ClientKey, ClientValue>()
-                        .remove(key, key)
-                } else {
-                    redisOperationsClient
-                        .opsForHash<ClientKey, ClientValue>()
-                        .put(key, key, it)
-                }
-            }
+        return serverRedisTemplate.opsForHash<User, Int>()
+            .increment(server, user, 1)
+            .flatMap { userRedisTemplate.opsForHash<Server, Int>().increment(user, server, 1) }
             .then()
     }
 
-    override fun getUserClientInfo(user: UUID): Mono<MutableMap<UUID, Int>> {
-        val key = ClientKey(user)
+    override fun removeClient(userUuid: UUID): Mono<Void> {
+        val server = Server(Config.serverUuid)
+        val user = User(userUuid)
 
-        return redisOperationsClient
-            .opsForHash<ClientKey, ClientValue>()
-            .get(key, key)
-            .map { it.clients }
+        val task1 = serverRedisTemplate.opsForHash<User, Int>()
+            .increment(server, user, -1).filter { it == 0L }
+            .flatMap { serverRedisTemplate.opsForHash<User, Int>().remove(server, user) }
+            .then()
+
+        val task2 = userRedisTemplate.opsForHash<Server, Int>().increment(user, server, -1).filter { it == 0L }
+            .flatMap { userRedisTemplate.opsForHash<Server, Int>().remove(user, server) }
+            .then()
+
+        return Mono.`when`(task1, task2).then()
+    }
+
+    override fun clearClient(): Mono<Void> {
+        val server = Server(Config.serverUuid)
+
+        return serverRedisTemplate.opsForHash<User, Int>()
+            .keys(server)
+            .flatMap { userRedisTemplate.opsForHash<Server, Int>().remove(it, server) }
+            .then(serverRedisTemplate.opsForHash<User, Int>()
+                .delete(server))
+            .then()
+    }
+
+    override fun getUserClientInfo(userUuid: UUID): Mono<MutableMap<UUID, Int>> {
+        val user = User(userUuid)
+
+        return userRedisTemplate.opsForHash<Server, Int>()
+            .entries(user)
+            .map { it.key.server to it.value }
+            .collectList()
+            .map { it.toMap().toMutableMap() }
+    }
+
+    @PostConstruct
+    fun applicationShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(Thread {
+            clearClient().subscribe()
+        })
     }
 }

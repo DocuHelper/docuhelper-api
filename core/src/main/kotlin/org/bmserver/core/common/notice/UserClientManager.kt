@@ -6,9 +6,11 @@ import java.util.UUID
 // 유저 클라이언트 관리
 interface UserClientManager {
 
-    fun addClient(user: UUID): Mono<Void>
+    fun addClient(userUuid: UUID): Mono<Void>
 
-    fun removeClient(user: UUID): Mono<Void>
+    fun removeClient(userUuid: UUID): Mono<Void>
 
-    fun getUserClientInfo(user: UUID): Mono<MutableMap<UUID, Int>>
+    fun clearClient(): Mono<Void>
+
+    fun getUserClientInfo(userUuid: UUID): Mono<MutableMap<UUID, Int>>
 }
