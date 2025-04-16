@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.Duration
 
 @Component
 class AiAdapter(
@@ -40,5 +41,7 @@ class AiAdapter(
 
         return openAiChatModel.internalStream(prompt, null)
             .map { it.result.output.text ?: "" }
+            .bufferTimeout(100, Duration.ofMillis(500))
+            .map { it.joinToString("") }// 최대 10개 또는 500ms마다 모아서 배출
     }
 }
