@@ -3,6 +3,7 @@ package org.bmserver.documentparser
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
 import org.apache.pdfbox.text.TextPosition
+import java.awt.geom.Rectangle2D
 import java.io.Writer
 
 // A Writer that discards all output
@@ -30,5 +31,23 @@ class PositionCapturingStripper(private val document: PDDocument) : PDFTextStrip
         // This will call writeString internally
         writeText(document, NullWriter)
         return positions.toList()
+    }
+
+    /**
+     * Parses the specified page number and returns all text position bounding boxes
+     * expanded by the given integer margins.
+     */
+    fun capture(pageNum: Int, marginX: Int, marginY: Int): List<Rectangle2D> {
+        // grab raw text positions
+        val rawPositions = capture(pageNum)
+        // inflate each bounding box by margins
+        return rawPositions.map { pos ->
+            Rectangle2D.Float(
+                (pos.xDirAdj - marginX).toFloat(),
+                (pos.yDirAdj - marginY).toFloat(),
+                (pos.widthDirAdj + marginX * 2).toFloat(),
+                (pos.heightDir + marginY * 2).toFloat()
+            )
+        }
     }
 }

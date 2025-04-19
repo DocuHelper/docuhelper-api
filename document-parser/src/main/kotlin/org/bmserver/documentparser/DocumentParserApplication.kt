@@ -1,7 +1,6 @@
 package org.bmserver.documentparser
 
 import org.springframework.ai.reader.ExtractedTextFormatter
-import org.springframework.ai.reader.pdf.PagePdfDocumentReader
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
@@ -38,8 +37,8 @@ fun main() {
         println("================================================================")
         println("try it : ${it}")
         val reader =
-//            CustomPagePdfDocumentReader(it,config)
-            PagePdfDocumentReader(it, config)
+            CustomPagePdfDocumentReader(it,config)
+//            PagePdfDocumentReader(it, config)
 //        ParagraphPdfDocumentReader(it, config)
 
         val documents = reader.read() // 문단 단위로 Document 리스트 반환

@@ -13,6 +13,7 @@ import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.Resource
 import org.springframework.util.StringUtils
 import java.io.IOException
+import java.util.LinkedList
 
 /**
  * 2열(Left/Right) 구조의 PDF 페이지를 읽어들여
@@ -96,58 +97,91 @@ class CustomPagePdfDocumentReader : DocumentReader {
                     .mapKeys {
                         Pair(
                             Pair(it.value.first().x, it.value.first().y),
-                            Pair(it.value.last().x, it.value.last().y+it.value.last().height)
+                            Pair(it.value.last().x + it.value.last().width, it.value.last().y + it.value.last().height)
                         )
                     }
 
-                val addContent = mutableMapOf<Pair<Pair<Float, Float>, Pair<Float, Float>>, List<TextPosition>>()
                 val content = mutableListOf<String>()
-                var temp = 0
-                groupYField.forEach {
-                    val pageSize = Pair(it.value.first().pageWidth, it.value.first().pageHeight)
-                    val pageCenterStandard = pageSize.first / 2
-                    val section = it.value.map { it.toString() }.joinToString("") + "\n"
 
-                    val sectionPosition = it.key
+                val groupLine = groupYField.values.groupBy { Math.round(it.first().y.toDouble() / 7) * 7 }
+                    .values.map { LinkedList(it.map { it.joinToString("") }) }
 
-                    val startPositionX = sectionPosition.first.first
-                    val endPositionX = sectionPosition.second.first
-
-                    val startPositionY = sectionPosition.first.second
-                    val endPositionY = sectionPosition.second.second
-
-
-                    // 왼쪽
-                    if (endPositionX < pageCenterStandard) {
-                        content.add(temp, section)
-                        temp += 1
-                    } else if (startPositionX > pageCenterStandard) { // 오른쪽
-                        val leftContent =
-                            addContent.filter {
-                                (startPositionY in it.key.first.second ..it.key.second.second)
-                                        ||
-                                        (endPositionY in it.key.first.second ..it.key.second.second)
-                            }
-                        //왼쪽에 없으면®
-                        if (leftContent.isEmpty()) {
-                            content.add(temp, section)
-                            temp += 1
-                        } else { //왼쪽에 있으면
-                            content.add(temp, section)
+                while (groupLine.filter { it.isNotEmpty() }.isNotEmpty()) {
+                    groupLine.forEach {
+                        if (it.isNotEmpty()) {
+                            content.add(it.pollFirst()+"\n")
                         }
-                    } else { // 중앙
-                        content.add(temp, section)
-                        temp += 1
                     }
-
-                    addContent.put(it.key, it.value)
-
                 }
-
-                // 커스텀 E
 
                 pageTextGroupList += content
                 pageNumber++
+
+//                val regions = groupYField.keys.map {
+//                    Rectangle(
+//                        it.first.first.toInt(),
+//                        it.first.second.toInt(),
+//                        (it.second.first - it.first.first).toInt(),
+//                        (it.second.second - it.first.second).toInt()
+//                    )
+//                }
+
+//                val stripper = PDFLayoutTextStripperByArea()
+//
+//                regions.forEach {
+//                    stripper.addRegion("test", it)
+//                    stripper.extractRegions(page)
+//                    val result = stripper.getTextForRegion("test").replace("\n", "")
+//                    println(result)
+//                }
+
+//                val addContent = mutableMapOf<Pair<Pair<Float, Float>, Pair<Float, Float>>, List<TextPosition>>()
+//                val content = mutableListOf<String>()
+//                var temp = 0
+//                groupYField.forEach {
+//                    val pageSize = Pair(it.value.first().pageWidth, it.value.first().pageHeight)
+//                    val pageCenterStandard = pageSize.first / 2
+//                    val section = it.value.map { it.toString() }.joinToString("") + "\n"
+//
+//                    val sectionPosition = it.key
+//
+//                    val startPositionX = sectionPosition.first.first
+//                    val endPositionX = sectionPosition.second.first
+//
+//                    val startPositionY = sectionPosition.first.second
+//                    val endPositionY = sectionPosition.second.second
+//
+//
+//                    // 왼쪽
+//                    if (endPositionX < pageCenterStandard) {
+//                        content.add(temp, section)
+//                        temp += 1
+//                    } else if (startPositionX > pageCenterStandard) { // 오른쪽
+//                        val leftContent =
+//                            addContent.filter {
+//                                (startPositionY in it.key.first.second..it.key.second.second)
+//                                        ||
+//                                        (endPositionY in it.key.first.second..it.key.second.second)
+//                            }
+//                        //왼쪽에 없으면®
+//                        if (leftContent.isEmpty()) {
+//                            content.add(temp, section)
+//                            temp += 1
+//                        } else { //왼쪽에 있으면
+//                            content.add(temp, section)
+//                        }
+//                    } else { // 중앙
+//                        content.add(temp, section)
+//                        temp += 1
+//                    }
+//
+//                    addContent.put(it.key, it.value)
+//
+//                }
+
+                // 커스텀 E
+
+//                pageTextGroupList += content
             }
 
             // 남은 텍스트 처리
