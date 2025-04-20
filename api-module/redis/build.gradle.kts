@@ -18,25 +18,19 @@ repositories {
     mavenCentral()
 }
 
-extra["springAiVersion"] = "1.0.0-M7"
-
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":common-module:core"))
 
-    implementation("org.springframework.ai:spring-ai-starter-model-ollama")
-    implementation("org.springframework.ai:spring-ai-starter-model-openai")
-
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    testImplementation("io.r2dbc:r2dbc-h2:1.0.0.RELEASE")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
 
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}")
-    }
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+    testImplementation("io.r2dbc:r2dbc-h2:1.0.0.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+
 }
 
 kotlin {
@@ -57,3 +51,4 @@ tasks {
         enabled = true
     }
 }
+

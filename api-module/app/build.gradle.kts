@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
 //    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
-    id("org.springframework.boot") version "3.4.3"
+    id("org.springframework.boot") version "3.4.4"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -28,12 +28,12 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":docuhelper-file"))
-    implementation(project(":gateway"))
-    implementation(project(":kafka"))
-    implementation(project(":redis"))
-    implementation(project(":ai"))
+    implementation(project(":common-module:core"))
+    implementation(project(":common-module:docuhelper-file"))
+    implementation(project(":api-module:gateway"))
+    implementation(project(":api-module:kafka"))
+    implementation(project(":api-module:redis"))
+    implementation(project(":api-module:ai"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

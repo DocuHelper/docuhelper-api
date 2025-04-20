@@ -1,0 +1,7 @@
+include(":core")
+include(":docuhelper-file")
+include(":api-module:kafka")
+include(":api-module:redis")
+include(":api-module:ai")
+include(":api-module:app")
+include(":api-module:gateway")
