@@ -3,7 +3,6 @@ package org.bmserver.documentparser
 import org.apache.pdfbox.pdfparser.PDFParser
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
-import org.apache.pdfbox.text.TextPosition
 import org.slf4j.LoggerFactory
 import org.springframework.ai.document.Document
 import org.springframework.ai.document.DocumentReader
@@ -12,6 +11,7 @@ import org.springframework.ai.reader.pdf.layout.PDFLayoutTextStripperByArea
 import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.Resource
 import org.springframework.util.StringUtils
+import java.awt.geom.Rectangle2D
 import java.io.IOException
 import java.util.LinkedList
 
@@ -89,27 +89,49 @@ class CustomPagePdfDocumentReader : DocumentReader {
 
                 // 동적 레이아웃 감지: 글자 위치 획득
                 val positionStripper = PositionCapturingStripper(document)
-                val allPositions: List<TextPosition> = positionStripper.capture(pageNumber + 1)
+                val allArea = positionStripper.capture(pageNumber + 1, 0, 0)
 
-                // 커스텀 S
-                val groupYField = allPositions
-                    .groupBy { it.y }
-                    .mapKeys {
-                        Pair(
-                            Pair(it.value.first().x, it.value.first().y),
-                            Pair(it.value.last().x + it.value.last().width, it.value.last().y + it.value.last().height)
+                val test = allArea
+                    .groupBy { it.y } // 글자 -> 한줄
+                    .values
+                    //TODO 이거 왜 .. 내맘대로.. 안될까...
+                    .groupBy { Math.ceil((it.first().y.toInt() / 10).toDouble()) * 10 } // 1단 2단
+                    .values
+
+                val test_area = test.map {
+                    it.map { rects ->
+                        val minX = rects.minOf { it.x }
+                        val minY = rects.minOf { it.y }
+                        val maxX = rects.maxOf { it.x + it.width }
+                        val maxY = rects.maxOf { it.y + it.height }
+                        Rectangle2D.Float(
+                            minX.toFloat(),
+                            minY.toFloat(),
+                            (maxX - minX).toFloat(),
+                            (maxY - minY).toFloat()
                         )
                     }
+                }
+
+                val mergedAreas = test_area.map { rects ->
+                    mergeRectangles(rects, threshold = 5f) // TODO 글자크기에 따라 달라지게 해야할듯
+                }
+
+                val test_area_string = mergedAreas.map {
+                    val tt = it.mapIndexed { idx, rect ->
+                        pdfTextStripper.addRegion("region$idx", rect)
+                        pdfTextStripper.extractRegions(page)
+                        pdfTextStripper.removeRegion("region$idx")
+                        pdfTextStripper.getTextForRegion("region$idx").trim()
+                    }
+                    LinkedList(tt)
+                }
 
                 val content = mutableListOf<String>()
-
-                val groupLine = groupYField.values.groupBy { Math.round(it.first().y.toDouble() / 7) * 7 }
-                    .values.map { LinkedList(it.map { it.joinToString("") }) }
-
-                while (groupLine.filter { it.isNotEmpty() }.isNotEmpty()) {
-                    groupLine.forEach {
-                        if (it.isNotEmpty()) {
-                            content.add(it.pollFirst()+"\n")
+                while (test_area_string.filter { it.isNotEmpty() }.isNotEmpty()) {
+                    test_area_string.forEach {
+                        if (it.peekFirst() != null) {
+                            content += it.pollFirst() + "\n"
                         }
                     }
                 }
@@ -117,84 +139,44 @@ class CustomPagePdfDocumentReader : DocumentReader {
                 pageTextGroupList += content
                 pageNumber++
 
-//                val regions = groupYField.keys.map {
-//                    Rectangle(
-//                        it.first.first.toInt(),
-//                        it.first.second.toInt(),
-//                        (it.second.first - it.first.first).toInt(),
-//                        (it.second.second - it.first.second).toInt()
-//                    )
-//                }
-
-//                val stripper = PDFLayoutTextStripperByArea()
-//
-//                regions.forEach {
-//                    stripper.addRegion("test", it)
-//                    stripper.extractRegions(page)
-//                    val result = stripper.getTextForRegion("test").replace("\n", "")
-//                    println(result)
-//                }
-
-//                val addContent = mutableMapOf<Pair<Pair<Float, Float>, Pair<Float, Float>>, List<TextPosition>>()
-//                val content = mutableListOf<String>()
-//                var temp = 0
-//                groupYField.forEach {
-//                    val pageSize = Pair(it.value.first().pageWidth, it.value.first().pageHeight)
-//                    val pageCenterStandard = pageSize.first / 2
-//                    val section = it.value.map { it.toString() }.joinToString("") + "\n"
-//
-//                    val sectionPosition = it.key
-//
-//                    val startPositionX = sectionPosition.first.first
-//                    val endPositionX = sectionPosition.second.first
-//
-//                    val startPositionY = sectionPosition.first.second
-//                    val endPositionY = sectionPosition.second.second
-//
-//
-//                    // 왼쪽
-//                    if (endPositionX < pageCenterStandard) {
-//                        content.add(temp, section)
-//                        temp += 1
-//                    } else if (startPositionX > pageCenterStandard) { // 오른쪽
-//                        val leftContent =
-//                            addContent.filter {
-//                                (startPositionY in it.key.first.second..it.key.second.second)
-//                                        ||
-//                                        (endPositionY in it.key.first.second..it.key.second.second)
-//                            }
-//                        //왼쪽에 없으면®
-//                        if (leftContent.isEmpty()) {
-//                            content.add(temp, section)
-//                            temp += 1
-//                        } else { //왼쪽에 있으면
-//                            content.add(temp, section)
-//                        }
-//                    } else { // 중앙
-//                        content.add(temp, section)
-//                        temp += 1
-//                    }
-//
-//                    addContent.put(it.key, it.value)
-//
-//                }
-
-                // 커스텀 E
-
-//                pageTextGroupList += content
             }
 
-            // 남은 텍스트 처리
-            if (lastPage != null && pageTextGroupList.isNotEmpty()) {
-                val aggregated = pageTextGroupList.joinToString("")
-                readDocuments.add(toDocument(lastPage, aggregated, startPageNumber, pageNumber))
-            }
-            logger.info("Processed {} pages", totalPages)
             return readDocuments
         } catch (e: IOException) {
             throw RuntimeException(e)
         }
     }
+
+    private fun mergeRectangles(
+        rects: List<Rectangle2D.Float>,
+        threshold: Float
+    ): List<Rectangle2D.Float> {
+        if (rects.isEmpty()) return emptyList()
+        val merged = mutableListOf<Rectangle2D.Float>()
+        var current = rects[0]
+        for (i in 1 until rects.size) {
+            val next = rects[i]
+            val gap = next.x - (current.x + current.width)
+            if (gap <= threshold) {
+                val newMinX = minOf(current.x, next.x)
+                val newMinY = minOf(current.y, next.y)
+                val newMaxX = maxOf(current.x + current.width, next.x + next.width)
+                val newMaxY = maxOf(current.y + current.height, next.y + next.height)
+                current = Rectangle2D.Float(
+                    newMinX.toFloat(),
+                    newMinY.toFloat(),
+                    (newMaxX - newMinX).toFloat(),
+                    (newMaxY - newMinY).toFloat()
+                )
+            } else {
+                merged.add(current)
+                current = next
+            }
+        }
+        merged.add(current)
+        return merged
+    }
+
 
     private fun toDocument(
         page: PDPage,
@@ -211,4 +193,3 @@ class CustomPagePdfDocumentReader : DocumentReader {
         return doc
     }
 }
-
