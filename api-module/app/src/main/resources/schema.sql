@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS public.document
     create_dt TIMESTAMP
 );
 
+alter table public.document ADD if not exists type varchar;
+
 CREATE TABLE IF NOT EXISTS public.chunk
 (
     uuid          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -42,9 +44,3 @@ CREATE TABLE IF NOT EXISTS public.chat_answer_ref
 
     create_dt TIMESTAMP
 );
-
-
-select
-    *
-from public.chunk c
-where uuid in ('c9cc7b53-9045-4088-a0c6-528dd535e99a')

@@ -5,6 +5,7 @@ import java.util.UUID
 
 data class Document(
     val name: String,
+    val type: DocumentType = DocumentType.SINGLE_COLUMN,
     var state: DocumentState = DocumentState.READING,
     val file: UUID,
     val owner: UUID,
