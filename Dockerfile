@@ -18,4 +18,4 @@ RUN chmod +x gradlew
 
 RUN sh gradlew build --warning-mode all
 
-ENTRYPOINT ["java", "-jar", "app/build/libs/app-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "api-module/app/build/libs/app-0.0.1-SNAPSHOT.jar"]
