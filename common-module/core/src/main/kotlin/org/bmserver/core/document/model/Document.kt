@@ -5,17 +5,11 @@ import java.util.UUID
 
 data class Document(
     val name: String,
-    val type: DocumentType = DocumentType.SINGLE_COLUMN,
+    val type: DocumentType,
     var state: DocumentState = DocumentState.READING,
     val file: UUID,
     val owner: UUID,
 ) : BaseDomain() {
-    constructor(name: String, file: UUID, owner: UUID) : this(
-        name = name,
-        state = DocumentState.READING,
-        file = file,
-        owner = owner,
-    )
 
     fun updateDocumentState(state: DocumentState): Document {
         this.state = state
