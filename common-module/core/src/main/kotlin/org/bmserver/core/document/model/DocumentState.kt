@@ -5,4 +5,5 @@ enum class DocumentState {
     PARSING,
     EMBEDDING,
     COMPLETE,
+    Fail
 }
