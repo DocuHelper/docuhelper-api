@@ -7,8 +7,12 @@ import org.bmserver.core.chat.answer.ref.AnswerRefOutPort
 import org.bmserver.core.chat.event.ChatSend
 import org.bmserver.core.chat.model.ChatAnswerRef
 import org.bmserver.core.common.domain.event.EventHandler
+import org.bmserver.core.common.domain.event.config.EventPublisher
 import org.bmserver.core.common.notice.UserNotifier
 import org.bmserver.core.document.chunk.ChunkOutPort
+import org.bmserver.core.user.token.event.UpdateUserToken
+import org.bmserver.core.user.token.history.TokenHistoryType
+import org.bmserver.core.user.token.history.UserTokenHistoryOutPort
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toFlux
@@ -20,7 +24,9 @@ class ChatSendEventHandler(
     private val chatOutPort: ChatOutPort,
     private val answerRefOutPort: AnswerRefOutPort,
     private val aiOutPort: AiOutPort,
-    private val userNotifier: UserNotifier
+    private val userTokenHistoryOutPort: UserTokenHistoryOutPort,
+    private val userNotifier: UserNotifier,
+    private val eventPublisher: EventPublisher
 ) : EventHandler<ChatSend> {
     override fun handle(event: ChatSend): Mono<Void> =
         // 백터 기반 문서 검색(Chunk)
@@ -73,9 +79,15 @@ class ChatSendEventHandler(
                 val answer = chatResults.map { it.message }.joinToString("")
                 chatOutPort.updateAnswer(event.chat.uuid!!, answer).thenReturn(chatResults)
             }
-            .doOnNext {
-                // TODO 토큰 사용량 관련 처리
-                println(it.last().token)
+            .flatMap {
+                val token = it.last().token
+                eventPublisher.publish(
+                    UpdateUserToken(
+                        userUuid = event.chat.userUuid,
+                        type = TokenHistoryType.CHAT,
+                        diff = (token?.totalToken ?: 0) * -1
+                    )
+                )
             }
             .then()
 }
