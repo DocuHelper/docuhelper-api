@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono
 interface AiOutPort {
     fun getEmbedding(text: String): Mono<List<Float>>
 
-    fun getAnswer(text: String): Flux<String>
+    fun getAnswer(text: String): Flux<ChatResult>
 }

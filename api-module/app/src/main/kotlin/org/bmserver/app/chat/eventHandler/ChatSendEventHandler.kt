@@ -22,10 +22,12 @@ class ChatSendEventHandler(
     private val aiOutPort: AiOutPort,
     private val userNotifier: UserNotifier
 ) : EventHandler<ChatSend> {
-    override fun handle(event: ChatSend): Mono<Void> {
-        return chunkOutPort.findChunkByEmbed(event.chat.document, event.chat.userAsk)
+    override fun handle(event: ChatSend): Mono<Void> =
+        // 백터 기반 문서 검색(Chunk)
+        chunkOutPort.findChunkByEmbed(event.chat.document, event.chat.userAsk)
             .take(3)
             .toFlux()
+            // 채팅 참고 문서(Chunk) 저장
             .flatMap { chunkAndSimilarity ->
                 answerRefOutPort.create(
                     ChatAnswerRef(
@@ -37,6 +39,7 @@ class ChatSendEventHandler(
             }
             .collectList()
             .toFlux()
+            // 채팅 프롬프트 생성
             .map { chunks -> chunks.map { it.chunk.content }.joinToString("") }
             .map { refData ->
                 val sb = StringBuilder()
@@ -50,25 +53,30 @@ class ChatSendEventHandler(
                 sb.append(refData)
                 sb.toString()
             }
+            // LLM 요청
             .flatMap { text ->
                 aiOutPort
                     .getAnswer(text)
+                    // 실시간 답변 반영
                     .flatMap {
                         userNotifier.send(
                             user = event.chat.userUuid,
                             data = ChatAnswerChunk(
                                 chat = event.chat.uuid ?: UUID.randomUUID(),
-                                chunk = it
+                                chunk = it.message
                             )
                         ).thenReturn(it)
-                    }
-                    .collectList()
-                    .map { it.joinToString("") }
-                    .flatMap {
-                        chatOutPort.updateAnswer(event.chat.uuid!!, it)
-                    }
+                    }.collectList()
+            }
+            // 채팅 답변 저장
+            .flatMap { chatResults ->
+                val answer = chatResults.map { it.message }.joinToString("")
+                chatOutPort.updateAnswer(event.chat.uuid!!, answer).thenReturn(chatResults)
+            }
+            .doOnNext {
+                // TODO 토큰 사용량 관련 처리
+                println(it.last().token)
             }
             .then()
-    }
 }
 

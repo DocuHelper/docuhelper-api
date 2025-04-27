@@ -3,6 +3,8 @@ package org.bmserver.ai
 import org.bmserver.ai.ollama.OllamaEmbeddingRequest
 import org.bmserver.ai.ollama.OllamaEmbeddingResponse
 import org.bmserver.core.ai.AiOutPort
+import org.bmserver.core.ai.ChatResult
+import org.bmserver.core.ai.Token
 import org.springframework.ai.chat.prompt.Prompt
 import org.springframework.ai.model.openai.autoconfigure.OpenAiChatProperties
 import org.springframework.ai.openai.OpenAiChatModel
@@ -36,12 +38,28 @@ class AiAdapter(
             .map { it.embedding }
     }
 
-    override fun getAnswer(text: String): Flux<String> {
+    override fun getAnswer(text: String): Flux<ChatResult> {
         val prompt = Prompt(text, openAiChatProperties.options)
 
         return openAiChatModel.internalStream(prompt, null)
-            .map { it.result.output.text ?: "" }
+            .map {
+                val message = it.results.filter { !it.output.text.isNullOrBlank() }
+                    .map { chatResponse -> chatResponse.output.text }
+                    .joinToString("")
+
+                if (it.metadata.get<String>("finishReason").equals("STOP")) {
+                    ChatResult(message)
+                } else {
+                    val usage = it.metadata.usage
+                    val token = Token(usage.promptTokens, usage.completionTokens, usage.totalTokens)
+                    ChatResult(message, token)
+                }
+            }
             .bufferTimeout(100, Duration.ofMillis(500))
-            .map { it.joinToString("") }// 최대 10개 또는 500ms마다 모아서 배출
+            .map {
+                val mergeMessage = it.map { chatResult -> chatResult.message }.joinToString("")
+                val token = it.last().token
+                ChatResult(mergeMessage, token)
+            }
     }
 }
