@@ -7,4 +7,8 @@ interface AiOutPort {
     fun getEmbedding(text: String): Mono<List<Float>>
 
     fun getAnswer(text: String): Flux<ChatResult>
+
+    fun <T> getAnswer(text: String, result: Class<T>): Mono<T>
+
+    fun <T> getAnswer(role:String, text: String, result: Class<T>): Mono<T>
 }

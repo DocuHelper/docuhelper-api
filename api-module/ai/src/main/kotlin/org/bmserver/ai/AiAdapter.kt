@@ -6,6 +6,8 @@ import org.bmserver.core.ai.AiOutPort
 import org.bmserver.core.ai.ChatResult
 import org.bmserver.core.ai.Token
 import org.springframework.ai.chat.prompt.Prompt
+import org.springframework.ai.chat.prompt.PromptTemplate
+import org.springframework.ai.converter.BeanOutputConverter
 import org.springframework.ai.model.openai.autoconfigure.OpenAiChatProperties
 import org.springframework.ai.openai.OpenAiChatModel
 import org.springframework.beans.factory.annotation.Value
@@ -36,6 +38,40 @@ class AiAdapter(
             .retrieve()
             .bodyToMono(OllamaEmbeddingResponse::class.java)
             .map { it.embedding }
+    }
+
+    override fun <T> getAnswer(text: String, result: Class<T>): Mono<T> {
+        return getAnswer("", text, result)
+    }
+
+    override fun <T> getAnswer(role: String, text: String, result: Class<T>): Mono<T> {
+        val beanOutputConverter = BeanOutputConverter(result)
+        val format: String = beanOutputConverter.getFormat()
+
+        val template = """
+        {role}
+        사용자 질문: {userMessage}
+        
+        답변형식:
+        {format}
+        
+    """.trimIndent()
+
+        val prompt = PromptTemplate(
+            template, mapOf(
+                "role" to role,
+                "userMessage" to text,
+                "format" to format
+            )
+        ).create(openAiChatProperties.options)
+        Prompt()
+        val generationFlux = openAiChatModel.internalStream(prompt, null)
+
+        return generationFlux
+            .map { it.results.map { it.output.text }.filter { !it.isNullOrBlank() }.joinToString("") }
+            .collectList()
+            .map { it.joinToString(separator = "") }
+            .map { beanOutputConverter.convert(it) }
     }
 
     override fun getAnswer(text: String): Flux<ChatResult> {
