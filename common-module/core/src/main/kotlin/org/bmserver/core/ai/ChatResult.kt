@@ -1,7 +1,7 @@
 package org.bmserver.core.ai
 
-data class ChatResult(
-    val message: String,
+data class ChatResult<T>(
+    val message: T,
     val token: Token? = null
 )
 
