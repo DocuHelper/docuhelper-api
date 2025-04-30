@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
-class DocumentParseEventHandler(
+class ChunkDocumentParseEventHandler(
     private val chunkOutPort: ChunkOutPort
 ) : EventHandler<DocumentParse> {
     override fun handle(event: DocumentParse): Mono<Void> {
