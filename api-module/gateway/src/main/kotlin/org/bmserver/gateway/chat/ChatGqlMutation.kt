@@ -10,13 +10,7 @@ import org.springframework.stereotype.Component
 class ChatGqlMutation(
     private val commonDomainService: CommonDomainService<Chat>
 ) : AbstractDomainMutationGateway<Chat>(commonDomainService) {
-    suspend fun send(request: ChatSendRequest): Chat {
-        return create(
-            Chat(
-                document = request.document,
-                userUuid = request.requestUser.uuid,
-                userAsk = request.ask,
-            )
-        )
-    }
+    fun send(request: ChatSendRequest) =
+        create(Chat(document = request.document, userUuid = request.requestUser.uuid, userAsk = request.ask))
+
 }

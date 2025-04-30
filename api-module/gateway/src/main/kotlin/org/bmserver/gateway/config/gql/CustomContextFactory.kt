@@ -5,9 +5,9 @@ import com.expediagroup.graphql.server.spring.subscriptions.SpringSubscriptionGr
 import graphql.GraphQLContext
 import io.jsonwebtoken.JwtException
 import org.bmserver.core.common.logger
+import org.bmserver.core.user.model.User
+import org.bmserver.core.user.model.UserRole
 import org.bmserver.gateway.config.security.JwtUtil
-import org.bmserver.gateway.config.security.User
-import org.bmserver.gateway.config.security.UserRole
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest

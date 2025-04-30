@@ -1,4 +1,4 @@
-package org.bmserver.gateway.config.security
+package org.bmserver.core.user.model
 
 import java.util.UUID
 

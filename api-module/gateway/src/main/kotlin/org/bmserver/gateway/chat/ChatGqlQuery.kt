@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 class ChatGqlQuery(
     private val chatOutPort: ChatOutPort
 ) : AbstractDomainQueryGateway<Chat>(chatOutPort) {
-    suspend fun findChat(queryRequest: ChatQueryRequest): List<Chat> {
-        return find(queryRequest.toQuery())
-    }
+    fun findChat(queryRequest: ChatQueryRequest) = find(queryRequest.toQuery())
+
 }

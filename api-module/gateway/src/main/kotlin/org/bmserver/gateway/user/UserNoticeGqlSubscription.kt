@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.schema.DataFetchingEnvironment
 import org.bmserver.core.common.notice.SubScriptionNotifier
 import org.bmserver.core.common.notice.UserClientManager
+import org.bmserver.core.user.model.User
 import org.bmserver.gateway.config.gql.getRequestUser
-import org.bmserver.gateway.config.security.User
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 

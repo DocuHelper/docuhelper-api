@@ -1,6 +1,7 @@
 package org.bmserver.app.user.token
 
-import org.bmserver.gateway.config.security.UserRole
+import org.bmserver.core.user.model.UserRole
+
 
 object UserRoleTokenPolicy {
     fun tokenLimitOf(role: UserRole): Int {

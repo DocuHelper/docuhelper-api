@@ -1,9 +1,7 @@
 package org.bmserver.gateway.chunk
 
-import kotlinx.coroutines.reactor.awaitSingle
 import org.bmserver.core.document.chunk.ChunkOutPort
 import org.bmserver.core.document.chunk.model.Chunk
-import org.bmserver.core.document.chunk.model.result.ChunkWithSimilarity
 import org.bmserver.gateway.common.AbstractDomainQueryGateway
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -14,7 +12,7 @@ class ChunkGqlQuery(
 ) : AbstractDomainQueryGateway<Chunk>(
     chunkOutPort
 ) {
-    suspend fun findChunkByEmbedValue(document: UUID, text: String): List<ChunkWithSimilarity> {
-        return chunkOutPort.findChunkByEmbed(document, text).collectList().awaitSingle()
-    }
+    fun findChunkByEmbedValue(document: UUID, text: String) =
+        chunkOutPort.findChunkByEmbed(document, text).collectList()
+
 }
