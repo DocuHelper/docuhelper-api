@@ -5,6 +5,7 @@ import org.bmserver.core.common.domain.event.config.EventPublisher
 import org.bmserver.core.common.notice.UserNotifier
 import org.bmserver.core.document.DocumentOutPort
 import org.bmserver.core.document.event.DocumentCreate
+import org.bmserver.core.document.event.DocumentDelete
 import org.bmserver.core.document.model.Document
 import org.bmserver.core.document.model.DocumentState
 import org.springframework.stereotype.Service
@@ -32,4 +33,7 @@ class DocumentAdapter(
             .flatMap { baseDomainRepository.save(it) }
             .flatMap { userNotifier.send(it.owner, it).thenReturn(it) }
     }
+
+    override fun delete(uuid: UUID): Mono<Void> = super.delete(uuid)
+        .then(eventPublisher.publish(DocumentDelete(uuid)))
 }

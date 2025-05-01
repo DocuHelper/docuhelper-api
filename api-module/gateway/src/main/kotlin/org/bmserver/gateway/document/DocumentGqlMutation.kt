@@ -19,4 +19,7 @@ class DocumentGqlMutation(
         environment: DataFetchingEnvironment,
     ) = create(request.toUseCase())
 
+    fun deleteDocument(uuid: UUID) =
+        super.delete(uuid).thenReturn(true)
+
 }
