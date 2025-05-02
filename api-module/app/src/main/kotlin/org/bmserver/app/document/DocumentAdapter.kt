@@ -34,6 +34,10 @@ class DocumentAdapter(
             .flatMap { userNotifier.send(it.owner, it).thenReturn(it) }
     }
 
-    override fun delete(uuid: UUID): Mono<Void> = super.delete(uuid)
+    override fun delete(uuid: UUID): Mono<Void> =
+        baseDomainRepository.findById(uuid).flatMap {
+            super.delete(uuid).thenReturn(it)
+        }
+        .flatMap { userNotifier.send(it.owner, DocumentDelete(uuid)) }
         .then(eventPublisher.publish(DocumentDelete(uuid)))
 }
