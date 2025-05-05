@@ -20,6 +20,11 @@ repositories {
 
 dependencies {
     implementation(project(":common-module:core"))
+    testImplementation("io.r2dbc:r2dbc-h2:1.0.0.RELEASE")
+
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -27,9 +32,6 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    implementation("com.fasterxml.jackson.core:jackson-databind")
-    testImplementation("io.r2dbc:r2dbc-h2:1.0.0.RELEASE")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
 
 }
 

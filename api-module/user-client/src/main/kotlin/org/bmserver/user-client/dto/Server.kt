@@ -1,4 +1,4 @@
-package org.bmserver.redis.dto
+package org.bmserver.`user-client`.dto
 
 import java.util.UUID
 

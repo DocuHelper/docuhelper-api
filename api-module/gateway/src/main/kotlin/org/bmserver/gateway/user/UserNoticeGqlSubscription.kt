@@ -24,14 +24,15 @@ class UserNoticeGqlSubscription(
             .doOnSubscribe { onConnected(requestUser) }
             .doOnCancel { disconnected(requestUser) }
             .doOnTerminate { disconnected(requestUser) }
-
     }
 
     private fun onConnected(requestUser: User) {
+        println("onConnected")
         userClientManager.addClient(requestUser.uuid).subscribe()
     }
 
     private fun disconnected(requestUser: User) {
+        println("disconnected")
         userClientManager.removeClient(requestUser.uuid).subscribe()
     }
 }

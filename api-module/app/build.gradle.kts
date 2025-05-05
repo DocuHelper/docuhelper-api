@@ -30,9 +30,10 @@ repositories {
 dependencies {
     implementation(project(":common-module:core"))
     implementation(project(":common-module:docuhelper-file"))
+    implementation(project(":common-module:redis"))
     implementation(project(":api-module:gateway"))
     implementation(project(":api-module:kafka"))
-    implementation(project(":api-module:redis"))
+    implementation(project(":api-module:user-client"))
     implementation(project(":api-module:ai"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
