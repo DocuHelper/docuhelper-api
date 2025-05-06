@@ -14,7 +14,7 @@ interface MemoryStorage {
     fun incrementHash(key: Any, hashKey: Any, delta: Double): Mono<Double>
     fun incrementHash(key: Any, hashKey: Any, delta: Long): Mono<Long>
 
-    fun <T> getHashHashKeys(key: Any): Flux<T>
-    fun <HK, V> getHash(key: Any): Flux<Map.Entry<HK,V>>
+    fun <T> getHashHashKeys(key: Any, hashKeyType: Class<T>): Flux<T>
+    fun <HK, V> getHash(key: Any, hashKeyType: Class<HK>, valueType: Class<V>): Flux<Map.Entry<HK, V>>
 
 }

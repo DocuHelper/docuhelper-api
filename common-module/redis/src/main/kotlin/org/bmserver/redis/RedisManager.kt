@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.AbstractMap
 
 @Component
 class RedisManager(
@@ -45,12 +46,18 @@ class RedisManager(
         commonRedisTemplate.opsForHash<Any, Any>()
             .increment(key, hashKey, delta)
 
-    override fun <T> getHashHashKeys(key: Any): Flux<T> =
+    override fun <T> getHashHashKeys(key: Any, hashKeyType: Class<T>): Flux<T> =
         commonRedisTemplate.opsForHash<T, Any>().keys(key)
+            .map { objectMapper.convertValue(it, hashKeyType) }
 
-    override fun <HK, V> getHash(key: Any): Flux<Map.Entry<HK, V>> {
+    override fun <HK, V> getHash(key: Any, hashKeyType: Class<HK>, valueType: Class<V>): Flux<Map.Entry<HK, V>> {
         return commonRedisTemplate.opsForHash<HK, V>()
             .entries(key)
+            .map {
+                val hashkey = objectMapper.convertValue(it.key, hashKeyType)
+                val hashvalue = objectMapper.convertValue(it.value, valueType)
+                AbstractMap.SimpleEntry(hashkey, hashvalue)
+            }
     }
 
 

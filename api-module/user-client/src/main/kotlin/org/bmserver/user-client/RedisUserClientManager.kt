@@ -42,7 +42,7 @@ class RedisUserClientManager(
     override fun clearClient(): Mono<Void> {
         val server = Server(Config.serverUuid)
 
-        return memoryStorage.getHashHashKeys<User>(server)
+        return memoryStorage.getHashHashKeys(server, User::class.java)
             .flatMap { memoryStorage.deleteHashValue(it, server) }
             .then(memoryStorage.deleteHash(server))
             .then()
@@ -51,7 +51,7 @@ class RedisUserClientManager(
     override fun getUserClientInfo(userUuid: UUID): Mono<MutableMap<UUID, Int>> {
         val user = User(userUuid)
 
-        return memoryStorage.getHash<Server, Int>(user)
+        return memoryStorage.getHash(user, Server::class.java, Int::class.java)
             .map { it.key.server to it.value }
             .collectList()
             .map { it.toMap().toMutableMap() }
