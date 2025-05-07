@@ -1,4 +1,4 @@
-package org.bmserver.kafka.config
+package org.bmserver.event
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.bmserver.core.common.domain.event.EventKey

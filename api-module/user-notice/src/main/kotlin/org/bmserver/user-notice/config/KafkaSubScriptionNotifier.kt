@@ -1,4 +1,4 @@
-package org.bmserver.kafka.config
+package org.bmserver.`user-notice`.config
 
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.bmserver.core.common.notice.NoticeKey

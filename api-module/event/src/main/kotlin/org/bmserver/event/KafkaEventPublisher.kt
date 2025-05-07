@@ -1,4 +1,4 @@
-package org.bmserver.kafka.config
+package org.bmserver.event
 
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.header.internals.RecordHeader
