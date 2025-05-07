@@ -2,9 +2,9 @@ package org.bmserver.ai
 
 import org.bmserver.ai.ollama.OllamaEmbeddingRequest
 import org.bmserver.ai.ollama.OllamaEmbeddingResponse
-import org.bmserver.core.ai.AiOutPort
-import org.bmserver.core.ai.ChatResult
-import org.bmserver.core.ai.Token
+import org.bmserver.core.common.ai.AiOutPort
+import org.bmserver.core.common.ai.ChatResult
+import org.bmserver.core.common.ai.Token
 import org.springframework.ai.chat.model.ChatResponse
 import org.springframework.ai.chat.prompt.Prompt
 import org.springframework.ai.chat.prompt.PromptTemplate

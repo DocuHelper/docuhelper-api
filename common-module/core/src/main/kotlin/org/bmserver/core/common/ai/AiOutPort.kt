@@ -1,4 +1,4 @@
-package org.bmserver.core.ai
+package org.bmserver.core.common.ai
 
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono

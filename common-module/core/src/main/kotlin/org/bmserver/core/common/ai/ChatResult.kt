@@ -1,4 +1,4 @@
-package org.bmserver.core.ai
+package org.bmserver.core.common.ai
 
 data class ChatResult<T>(
     val message: T,

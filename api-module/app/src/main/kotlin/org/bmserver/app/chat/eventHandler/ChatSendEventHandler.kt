@@ -1,7 +1,7 @@
 package org.bmserver.app.chat.eventHandler
 
 import org.bmserver.app.chat.notice.ChatAnswerChunk
-import org.bmserver.core.ai.AiOutPort
+import org.bmserver.core.common.ai.AiOutPort
 import org.bmserver.core.chat.ChatOutPort
 import org.bmserver.core.chat.answer.ref.AnswerRefOutPort
 import org.bmserver.core.chat.event.ChatSend

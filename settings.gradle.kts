@@ -1,10 +1,11 @@
 rootProject.name = "docuhelper"
+include(":common-module:core")
+include(":common-module:docuhelper-file")
+include(":common-module:redis")
+include(":common-module:ai")
+
 include(":api-module")
 include(":api-module:app")
 include(":api-module:gateway")
-include(":common-module:docuhelper-file")
-include(":common-module:core")
-include(":common-module:redis")
 include(":api-module:kafka")
 include(":api-module:user-client")
-include(":api-module:ai")

@@ -34,7 +34,7 @@ dependencies {
     implementation(project(":api-module:gateway"))
     implementation(project(":api-module:kafka"))
     implementation(project(":api-module:user-client"))
-    implementation(project(":api-module:ai"))
+    implementation(project(":common-module:ai"))
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

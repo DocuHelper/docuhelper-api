@@ -1,6 +1,6 @@
 package org.bmserver.app.document.chunk
 
-import org.bmserver.core.ai.AiOutPort
+import org.bmserver.core.common.ai.AiOutPort
 import org.bmserver.core.common.domain.BaseDomainService
 import org.bmserver.core.document.chunk.ChunkOutPort
 import org.bmserver.core.document.chunk.model.Chunk
