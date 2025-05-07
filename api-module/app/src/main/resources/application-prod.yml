@@ -29,3 +29,8 @@ spring:
 docuhelper:
   file:
     endpoint: ${DOCUHELPER_FILE_ENDPOINT}
+
+dev:
+  default:
+    login:
+      enable: false
