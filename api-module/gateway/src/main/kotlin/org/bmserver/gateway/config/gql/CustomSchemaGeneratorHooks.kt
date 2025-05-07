@@ -6,17 +6,25 @@ import com.expediagroup.graphql.generator.hooks.SchemaGeneratorHooks
 import graphql.schema.DataFetcherFactory
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.GraphQLType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.future.future
 import org.bmserver.core.common.logger
+import org.bmserver.core.user.model.User
 import org.bmserver.gateway.common.AbstractAuthRequest
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import java.lang.reflect.InvocationTargetException
 import java.net.URL
 import java.time.LocalDateTime
 import java.util.UUID
+import java.util.concurrent.CompletableFuture
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
+import kotlin.reflect.full.callSuspendBy
 
 
 @Component
@@ -32,8 +40,8 @@ class CustomSchemaGeneratorHooks : SchemaGeneratorHooks {
 }
 
 class CustomFunctionDataFetcher(
-    target: Any?,
-    fn: KFunction<*>,
+    val target: Any?,
+    val fn: KFunction<*>,
 ) : FunctionDataFetcher(target, fn) {
     override fun mapParameterToValue(
         param: KParameter,
@@ -55,12 +63,33 @@ class CustomFunctionDataFetcher(
         return parameterValue
     }
 
+    override fun runSuspendingFunction(
+        environment: DataFetchingEnvironment,
+        parameterValues: Map<KParameter, Any?>
+    ): CompletableFuture<Any?> {
+        val graphQLContext = environment.graphQlContext
+
+        val scope = CoroutineScope(GraphQLContextElement(graphQLContext)) // 핵심 변경점
+
+        return scope.future {
+            try {
+                fn.callSuspendBy(parameterValues)
+            } catch (exception: InvocationTargetException) {
+                throw exception.cause ?: exception
+            }
+        }
+    }
+
+
     override fun get(environment: DataFetchingEnvironment): Any? {
         val requestUser = environment.getRequestUser()
         logger.info { "requestUser : $requestUser" }
 
         return when (val result = super.get(environment)) {
-            is Mono<*> -> result.toFuture()
+            is Mono<*> -> result
+                .contextWrite { it.put(User::class.java, requestUser) }
+                .toFuture()
+
             else -> result
         }
     }
@@ -79,4 +108,9 @@ class CustomDataFetcherFactoryProvider : SimpleKotlinDataFetcherFactoryProvider(
                 fn = kFunction,
             )
         }
+}
+
+data class GraphQLContextElement(val graphQLContext: graphql.GraphQLContext) :
+    AbstractCoroutineContextElement(Key) {
+    companion object Key : CoroutineContext.Key<GraphQLContextElement>
 }

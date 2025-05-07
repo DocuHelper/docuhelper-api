@@ -5,8 +5,9 @@ import com.expediagroup.graphql.server.spring.subscriptions.SpringSubscriptionGr
 import graphql.GraphQLContext
 import io.jsonwebtoken.JwtException
 import org.bmserver.core.common.logger
+import org.bmserver.core.user.model.User
+import org.bmserver.core.user.model.UserRole
 import org.bmserver.gateway.config.security.JwtUtil
-import org.bmserver.gateway.config.security.User
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
@@ -28,16 +29,20 @@ class CustomContextFactory(
     @Value("\${dev.default.login.user.email}")
     private lateinit var testLoginEmail: String
 
+    @Value("\${dev.default.login.user.role}")
+    private lateinit var testLoginRole: String
+
     private fun createContextFromToken(jwtToken: String?): GraphQLContext {
         val user = if (testLoginEnable.toBoolean()) {
-            User(UUID.fromString(testLoginUUID), testLoginEmail)
+            User(UUID.fromString(testLoginUUID), testLoginEmail, UserRole.valueOf(testLoginRole))
         } else {
             try {
                 jwtToken?.let {
                     val userClaims = jwtUtil.parseJwt(it)
                     val uuid = UUID.fromString(userClaims["sub"] as String)
                     val email = userClaims["email"] as String
-                    User(uuid, email)
+                    val role = userClaims["role"] as String
+                    User(uuid, email, UserRole.valueOf(role))
                 }
             } catch (e: JwtException) {
                 logger.error { e }

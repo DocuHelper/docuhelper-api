@@ -26,8 +26,7 @@ class ChunkDataLoader(
         return DataLoaderFactory.newDataLoader<UUID, Chunk>(
             { uuids, env ->
                 CoroutineScope(Dispatchers.Default).future {
-                    println(uuids)
-                    chunkOutPort.find(ChunkQuery(uuids, null)).collectList().awaitSingle()
+                    chunkOutPort.find(ChunkQuery(uuids = uuids)).collectList().awaitSingle()
                 }
             },
             DataLoaderOptions.newOptions().setCachingEnabled(false)

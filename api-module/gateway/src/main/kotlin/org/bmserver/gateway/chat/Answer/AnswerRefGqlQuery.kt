@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class AnswerRefGqlQuery(
     private val answerRefOutPort: AnswerRefOutPort
 ) : AbstractDomainQueryGateway<ChatAnswerRef>(answerRefOutPort) {
-    suspend fun findAnswerRef(request: AnswerRefQueryRequest) = find(request.toQuery())
-    suspend fun findAnswerRefWithChunk(request: AnswerRefQueryRequest) =
-        find(request.toQuery()).map { AnswerRefWithChunk(it) }
+    fun findAnswerRef(request: AnswerRefQueryRequest) = find(request.toQuery())
+    fun findAnswerRefWithChunk(request: AnswerRefQueryRequest) =
+        find(request.toQuery()).map { it.map { AnswerRefWithChunk(it) } }
 }

@@ -39,7 +39,8 @@ logging:
 dev:
   default:
     login:
-      enable: false
+      enable: true
       user:
         uuid: c6751ab8-5fb5-44f7-8ab3-b326686b6640
         email: jmspon33@gmail.com
+        role: FREE
