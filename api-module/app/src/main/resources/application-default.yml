@@ -25,6 +25,9 @@ spring:
         model: bge-m3
     openai:
       api-key: ${OPENAI_API_KEY}
+      embedding:
+        options:
+          model: text-embedding-3-small
 
 docuhelper:
   file:
