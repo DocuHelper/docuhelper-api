@@ -26,6 +26,11 @@ spring:
     openai:
       api-key: ${OPENAI_API_KEY}
 
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST}
+  port: ${ELASTICSEARCH_PORT}
+  api-key: ${ELASTICSEARCH_API_KEY}
+
 docuhelper:
   file:
     endpoint: ${DOCUHELPER_FILE_ENDPOINT}

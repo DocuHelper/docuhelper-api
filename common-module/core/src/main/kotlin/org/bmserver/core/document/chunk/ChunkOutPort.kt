@@ -7,5 +7,5 @@ import reactor.core.publisher.Flux
 import java.util.UUID
 
 interface ChunkOutPort : CommonDomainService<Chunk> {
-    fun findChunkByEmbed(document: UUID, text: String): Flux<ChunkWithSimilarity>
+    fun findChunkByEmbed(document: UUID, text: String, searchCount:Int): Flux<ChunkWithSimilarity>
 }

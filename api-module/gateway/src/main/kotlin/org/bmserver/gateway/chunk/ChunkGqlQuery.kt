@@ -13,6 +13,6 @@ class ChunkGqlQuery(
     chunkOutPort
 ) {
     fun findChunkByEmbedValue(document: UUID, text: String) =
-        chunkOutPort.findChunkByEmbed(document, text).collectList()
+        chunkOutPort.findChunkByEmbed(document, text, 3).collectList()
 
 }

@@ -10,7 +10,24 @@ on:
     # Publish semver tags as releases.
   pull_request:
     branches: [ "main" ]
-
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
+      tags:
+        description: 'Test scenario tags'
+        required: false
+        type: boolean
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: docker.bmserver.org
@@ -53,14 +70,14 @@ jobs:
           VERSION=$(grep '^version\s*=' build.gradle.kts | sed 's/[^"]*"\(.*\)"/\1/')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: type=raw,value=${{ steps.gradle_version.outputs.version }}
+#      # Extract metadata (tags, labels) for Docker
+#      # https://github.com/docker/metadata-action
+#      - name: Extract Docker metadata
+#        id: meta
+#        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+#        with:
+#          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+#          tags: type=raw,value=${{ steps.gradle_version.outputs.version }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -73,6 +90,24 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.gradle_version.outputs.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          build-args: |
+            DB_HOST=${{secrets.DB_HOST}}
+            DB_PORT=${{secrets.DB_PORT}}
+            DB_USER=${{secrets.DB_USER}}
+            DB_PASSWD=${{secrets.DB_PASSWD}}
+            JWT_SECRET=${{secrets.JWT_SECRET}}
+            KAFKA_HOST=${{secrets.KAFKA_HOST}}
+            KAFKA_PORT=${{secrets.KAFKA_PORT}}
+            DOCUHELPER_FILE_ENDPOINT=${{secrets.DOCUHELPER_FILE_ENDPOINT}}
+            OPENAI_API_KEY=${{secrets.OPENAI_API_KEY}}
+            ELASTICSEARCH_HOST=${{secrets.ELASTICSEARCH_HOST}}
+            ELASTICSEARCH_PORT=${{secrets.ELASTICSEARCH_PORT}}
+            ELASTICSEARCH_API_KEY=${{secrets.ELASTICSEARCH_API_KEY}}
+            REDIS_HOST=${{secrets.REDIS_HOST}}
+            REDIS_PORT=${{secrets.REDIS_PORT}}
+            REDIS_PASSWORD=${{secrets.REDIS_PASSWORD}}
+            OLLAMA_ENDPOINT=${{secrets.OLLAMA_ENDPOINT}}
+            OLLAMA_EMBEDDING_MODEL=${{secrets.OLLAMA_EMBEDDING_MODEL}}
 
       - name: Generate Kubernetes manifest from template
         run: |
@@ -89,12 +124,12 @@ jobs:
       # repository is public to avoid leaking data.  If you would like to publish
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+#      - name: Sign the published Docker image
+#        if: ${{ github.event_name != 'pull_request' }}
+#        env:
+#          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+#          TAGS: ${{ steps.meta.outputs.tags }}
+#          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+#        # This step uses the identity token to provision an ephemeral certificate
+#        # against the sigstore community Fulcio instance.
+#        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}

@@ -1,7 +1,5 @@
 package org.bmserver.ai
 
-import org.bmserver.ai.ollama.OllamaEmbeddingRequest
-import org.bmserver.ai.ollama.OllamaEmbeddingResponse
 import org.bmserver.core.common.ai.AiOutPort
 import org.bmserver.core.common.ai.ChatResult
 import org.bmserver.core.common.ai.Token
@@ -11,35 +9,21 @@ import org.springframework.ai.chat.prompt.PromptTemplate
 import org.springframework.ai.converter.BeanOutputConverter
 import org.springframework.ai.model.openai.autoconfigure.OpenAiChatProperties
 import org.springframework.ai.openai.OpenAiChatModel
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.Duration
 
 @Component
 class AiAdapter(
-    private val ollamaClient: WebClient,
+    private val embeddingModel: EmbeddingModel,
     private val openAiChatModel: OpenAiChatModel,
     private val openAiChatProperties: OpenAiChatProperties,
+
 ) : AiOutPort {
-    @Value("\${spring.ai.ollama.embedding.model}")
-    lateinit var embeddingModel: String
 
-    override fun getEmbedding(text: String): Mono<List<Float>> {
-        val request = OllamaEmbeddingRequest(
-            model = embeddingModel,
-            prompt = text
-        )
-
-        return ollamaClient.post()
-            .uri("/api/embeddings")
-            .bodyValue(request)
-            .retrieve()
-            .bodyToMono(OllamaEmbeddingResponse::class.java)
-            .map { it.embedding }
-    }
+    override fun getEmbedding(text: String): Mono<List<Float>> =
+        embeddingModel.getEmbedding(text)
 
     override fun <T> getAnswer(text: String, result: Class<T>): Mono<ChatResult<T>> {
         return getAnswer("", text, result)

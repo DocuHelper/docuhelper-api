@@ -21,10 +21,13 @@ spring:
   ai:
     ollama:
       base-url: http://192.168.0.8:11434
-      embedding:
-        model: bge-m3
     openai:
       api-key: ${OPENAI_API_KEY}
+
+elasticsearch:
+  host: 192.168.0.135
+  port: 9200
+  api-key: OWI5NFRwY0JtcUZ3d2h3dFJoWFI6eDNFa0lhUXQtSWtUTmVtTlppQXI2Zw
 
 docuhelper:
   file:
@@ -32,9 +35,10 @@ docuhelper:
 
 logging:
   level:
-    org.springframework.jdbc.core: DEBUG
-    org.springframework.r2dbc: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
+    org.apache.kafka: off
+#    org.springframework.jdbc.core: DEBUG
+#    org.springframework.r2dbc: DEBUG
+#    io.r2dbc.postgresql.PARAM: DEBUG
 
 dev:
   default:

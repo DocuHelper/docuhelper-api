@@ -1,11 +1,11 @@
 package org.bmserver.app.chat.eventHandler
 
 import org.bmserver.app.chat.notice.ChatAnswerChunk
-import org.bmserver.core.common.ai.AiOutPort
 import org.bmserver.core.chat.ChatOutPort
 import org.bmserver.core.chat.answer.ref.AnswerRefOutPort
 import org.bmserver.core.chat.event.ChatSend
 import org.bmserver.core.chat.model.ChatAnswerRef
+import org.bmserver.core.common.ai.AiOutPort
 import org.bmserver.core.common.domain.event.EventHandler
 import org.bmserver.core.common.domain.event.config.EventPublisher
 import org.bmserver.core.common.notice.UserNotifier
@@ -18,7 +18,6 @@ import org.bmserver.core.user.token.history.UserTokenHistoryOutPort
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toFlux
-import java.util.UUID
 
 @Component
 class ChatSendEventHandler(
@@ -58,8 +57,7 @@ class ChatSendEventHandler(
 
 
     private fun searchDocumentByChunk(event: ChatSend): Mono<Void> =
-        chunkOutPort.findChunkByEmbed(event.chat.document, event.chat.userAsk)
-            .take(3)
+        chunkOutPort.findChunkByEmbed(event.chat.document, event.chat.userAsk, 3)
             .collectList()
             .flatMap { generateAnswer(event, it) }
 
@@ -71,8 +69,8 @@ class ChatSendEventHandler(
             // 채팅 참고 문서(Chunk) 저장
             answerRefOutPort.create(
                 ChatAnswerRef(
-                    chat = event.chat.uuid!!,
-                    chunk = chunkAndSimilarity.chunk.uuid!!,
+                    chat = event.chat.uuid,
+                    chunk = chunkAndSimilarity.chunk.uuid,
                     similarity = chunkAndSimilarity.similarity,
                 )
             ).thenReturn(chunkAndSimilarity)
@@ -80,7 +78,7 @@ class ChatSendEventHandler(
             .collectList()
             .toFlux()
             // 채팅 프롬프트 생성
-            .map { chunks -> chunks.map { it.chunk.content }.joinToString("") }
+            .map { chunks -> chunks.map { it.chunk.content }.joinToString("=============================== \n") }
             .map { refData ->
                 val sb = StringBuilder()
                 sb.append("너는 내가 보내준 자료를 기반으로 내가 원하는 정보를 찾아주는 비서야")
@@ -102,7 +100,7 @@ class ChatSendEventHandler(
                         userNotifier.send(
                             user = event.chat.userUuid,
                             data = ChatAnswerChunk(
-                                chat = event.chat.uuid ?: UUID.randomUUID(),
+                                chat = event.chat.uuid,
                                 chunk = it.message
                             )
                         ).thenReturn(it)
@@ -111,7 +109,7 @@ class ChatSendEventHandler(
             // 채팅 답변 저장
             .flatMap { chatResults ->
                 val answer = chatResults.map { it.message }.joinToString("")
-                chatOutPort.updateAnswer(event.chat.uuid!!, answer).thenReturn(chatResults)
+                chatOutPort.updateAnswer(event.chat.uuid, answer).thenReturn(chatResults)
             }
             .flatMap {
                 val token = it.last().token
