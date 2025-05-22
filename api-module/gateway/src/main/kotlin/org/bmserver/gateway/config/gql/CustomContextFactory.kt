@@ -59,12 +59,20 @@ class CustomContextFactory(
 
 
     override suspend fun generateContext(request: ServerRequest): GraphQLContext {
-        val jwtToken = request.cookies()["JWT_TOKEN"]?.get(0)?.value
+        val jwtTokenByHeader = request.headers().firstHeader("authorization")?.split(" ")?.getOrNull(1)
+        val jwtTokenByCookie = request.cookies()["JWT_TOKEN"]?.getOrNull(0)?.value
+
+        val jwtToken = jwtTokenByCookie ?: jwtTokenByHeader
+
         return createContextFromToken(jwtToken)
     }
 
     override suspend fun generateContext(session: WebSocketSession, params: Any?): GraphQLContext {
-        val jwtToken = session.handshakeInfo.cookies["JWT_TOKEN"]?.get(0)?.value
+        val jwtTokenByCookie = session.handshakeInfo.cookies["JWT_TOKEN"]?.get(0)?.value
+        val jwtTokenByHeader = session.handshakeInfo.headers.getFirst("authorization")?.split(" ")?.getOrNull(1)
+
+        val jwtToken = jwtTokenByCookie ?: jwtTokenByHeader
+
         return createContextFromToken(jwtToken)
     }
 
