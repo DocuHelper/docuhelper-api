@@ -29,15 +29,21 @@ spring:
         options:
           model: text-embedding-3-small
 
+elasticsearch:
+  host: 192.168.0.135
+  port: 9200
+  api-key: OWI5NFRwY0JtcUZ3d2h3dFJoWFI6eDNFa0lhUXQtSWtUTmVtTlppQXI2Zw
+
 docuhelper:
   file:
     endpoint: http://192.168.0.77:8082
 
 logging:
   level:
-    org.springframework.jdbc.core: DEBUG
-    org.springframework.r2dbc: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
+    org.apache.kafka: off
+#    org.springframework.jdbc.core: DEBUG
+#    org.springframework.r2dbc: DEBUG
+#    io.r2dbc.postgresql.PARAM: DEBUG
 
 dev:
   default:

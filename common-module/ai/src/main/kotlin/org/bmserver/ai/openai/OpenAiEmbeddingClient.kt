@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 
 class OpenAiEmbeddingClient(
-    private val openAiClient: WebClient
+    private val openAiClient: WebClient,
 ) : EmbeddingModel {
     @Value("\${spring.ai.openai.embedding.options.model}")
     lateinit var model: String
@@ -16,6 +16,7 @@ class OpenAiEmbeddingClient(
             input = text,
             model = model,
         )
+
 
         return openAiClient.post()
             .uri("/v1/embeddings")

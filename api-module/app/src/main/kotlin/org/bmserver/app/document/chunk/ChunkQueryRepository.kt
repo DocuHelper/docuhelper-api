@@ -40,7 +40,7 @@ class ChunkQueryRepository(
                         num = row.get("num", Int::class.java) ?: -1,
                         document = document,
 
-                        ).also { it.uuid = row.get("uuid", UUID::class.java) },
+                        ).also { it.uuid = row.get("uuid", UUID::class.java)!! },
                     similarity = row.get("similarity", Float::class.java) ?: 0f,
                 )
             }
