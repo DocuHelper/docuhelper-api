@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "org.bmserver"
-version = "0.1.7"
+version = "0.1.7.1"
 
 java {
     toolchain {
