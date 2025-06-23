@@ -65,3 +65,25 @@ CREATE TABLE IF NOT EXISTS public.user_token_history
 
     create_dt TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS public.test_content
+(
+    uuid    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content TEXT
+);
+
+CREATE TABLE IF NOT EXISTS public.test_qa
+(
+    uuid    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content_id uuid,
+    q       TEXT,
+    a       TEXT
+);
+
+alter table public.test_content
+    ADD if not exists embed_openai_3_small VECTOR,
+    ADD if not exists embed_openai_3_large VECTOR;
+
+alter table public.test_qa
+    ADD if not exists embed_openai_3_small VECTOR,
+    ADD if not exists embed_openai_3_large VECTOR;
