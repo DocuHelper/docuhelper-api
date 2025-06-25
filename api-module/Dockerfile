@@ -37,12 +37,12 @@ ENV REDIS_PASSWORD=${REDIS_PASSWORD}
 ENV OLLAMA_ENDPOINT=${OLLAMA_ENDPOINT}
 ENV OLLAMA_EMBEDDING_MODEL=${OLLAMA_EMBEDDING_MODEL}
 
-COPY . /app
+COPY ../ /app
 
 WORKDIR app
 
 RUN chmod +x gradlew
 
-RUN sh gradlew build --warning-mode all
+RUN sh gradlew api-module:app:build --warning-mode all
 
-ENTRYPOINT ["java", "-jar", "api-module/app/build/libs/app-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT sh -c 'java -jar $(find app/build/libs -name "*.jar" | grep -v "plain" | head -n 1)'
