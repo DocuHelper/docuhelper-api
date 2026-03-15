@@ -45,4 +45,5 @@ RUN chmod +x gradlew
 
 RUN sh gradlew api-module:app:build --warning-mode all
 
-ENTRYPOINT sh -c 'java -jar $(find app/build/libs -name "*.jar" | grep -v "plain" | head -n 1)'
+ENTRYPOINT sh -c 'java -jar $(find /app/api-module/app/build/libs -name "*.jar" | grep -v "plain" | head -n 1)'
+# ENTRYPOINT sh -c 'java -jar $(find app/build/libs -name "*.jar" | grep -v "plain" | head -n 1)'
