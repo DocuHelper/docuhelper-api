@@ -7,6 +7,6 @@ spring:
     password:
   data:
     redis:
-      host: 192.168.0.7
-      port: 6379
-      password: passwd
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}

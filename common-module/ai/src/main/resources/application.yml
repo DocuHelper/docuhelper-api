@@ -3,7 +3,7 @@ spring:
     name: ai
   ai:
     ollama:
-      base-url: http://192.168.0.8:11434
+      base-url: ${OLLAMA_ENDPOINT:http://localhost:11434}
       embedding:
         model: bge-m3
     openai:
