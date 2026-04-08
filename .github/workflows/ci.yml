@@ -1,0 +1,32 @@
+name: CI - Build Validation
+
+# PR 빌드 검증 전용 워크플로우
+# 시크릿 없이 Gradle 빌드만 수행하여 코드 무결성을 확인합니다.
+# 실제 배포는 kubernetes-deploy.yml (main push / workflow_dispatch)에서만 수행됩니다.
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Gradle Build Check
+    runs-on: self-hosted
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle (no secrets)
+        run: ./gradlew build -x test --no-daemon

@@ -7,9 +7,6 @@ name: deploy-docuhelper-api
 on:
   push:
     branches: [ "main" ]
-    # Publish semver tags as releases.
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
     inputs:
       logLevel:
@@ -48,10 +45,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Install the cosign tool except on PR
+      # workflow_dispatch는 브랜치 제한이 없으므로 main에서만 배포 허용
+      - name: Validate branch for workflow_dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "${{ github.ref_name }}" != "main" ]; then
+            echo "❌ 배포는 main 브랜치에서만 허용됩니다. (현재 브랜치: ${{ github.ref_name }})"
+            exit 1
+          fi
+          echo "✅ 브랜치 검증 통과: ${{ github.ref_name }}"
+
+      # Install the cosign tool
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
-        if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 #v3.5.0
         with:
           cosign-release: 'v2.2.4'
@@ -99,11 +105,12 @@ jobs:
             OLLAMA_EMBEDDING_MODEL=${{secrets.OLLAMA_EMBEDDING_MODEL}}
 
       - name: Generate Kubernetes manifest from template
+        if: github.event_name != 'pull_request'
         run: |
           export IMAGE_TAG=${{ steps.gradle_version.outputs.version }}
           envsubst < docuhelper-api.yaml > deploy.yaml
 
       # 쿠버네티스 배포
       - name: Deploy to Kubernetes
-        if: ${{ github.event_name != 'pull_request' }}
+        if: github.event_name != 'pull_request'
         run: kubectl apply -f deploy.yaml
