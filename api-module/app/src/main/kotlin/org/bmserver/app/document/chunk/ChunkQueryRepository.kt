@@ -19,18 +19,20 @@ class ChunkQueryRepository(
 
         val sql =
             """
-            SELECT 
-                uuid, page, content, num, embed_content <=> '$vectorString' AS similarity
-            FROM 
+            SELECT
+                uuid, page, content, num, embed_content <=> :embed::vector AS similarity
+            FROM
                 public.chunk
-            WHERE 
-                document = '$document'
-            ORDER BY 
+            WHERE
+                document = :document
+            ORDER BY
                 similarity ASC
             """.trimIndent()
 
         return r2dbcEntityTemplate.databaseClient
             .sql(sql)
+            .bind("embed", vectorString)
+            .bind("document", document.toString())
             .map { row, _ ->
                 ChunkWithSimilarity(
                     chunk = Chunk(
