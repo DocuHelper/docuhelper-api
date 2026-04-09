@@ -38,3 +38,9 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### Security: 민감한 정보가 포함될 수 있는 로컬 개발 설정 파일 ###
+# application-default.yml에는 DB 비밀번호, Redis 비밀번호 등 민감 정보가 포함될 수 있습니다.
+# 각 개발자는 로컬에서 직접 이 파일을 관리해야 합니다.
+**/application-local.yml
+application-default.yml
