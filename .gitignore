@@ -38,3 +38,6 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### Security: Exclude local config files with secrets ###
+**/application-default.yml
